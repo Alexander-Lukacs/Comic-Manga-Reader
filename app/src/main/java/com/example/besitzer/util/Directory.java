@@ -1,4 +1,4 @@
-package com.example.besitzer.com.example.besitzer.util;
+package com.example.besitzer.util;
 
 /**
  * This is a Class that contains every interesting information about a Directory/Archive
