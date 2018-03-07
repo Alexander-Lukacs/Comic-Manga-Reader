@@ -5,7 +5,7 @@
     tools:context="com.example.besitzer.reader.MainActivity">
 
     <item
-        android:id="@+id/settings"
-        android:title="@string/settings"
+        android:id="@+id/menu_settings"
+        android:title="@string/title_settings"
         app:showAsAction="never" />
 </menu>

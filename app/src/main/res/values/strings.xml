@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">Comic-Manga-Reader</string>
-    <string name="title_activity_main">MainActivity</string>
-    <string name="settings">Settings</string>
+    <string name="title_activity_main">Browser</string>
+    <string name="title_settings">Settings</string>
 </resources>
