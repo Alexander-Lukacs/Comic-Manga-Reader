@@ -27,12 +27,12 @@ public class OrmDbHelper extends OrmLiteSqliteOpenHelper {
     public static final int DB_VERSION = 1;
 
     //the DAO object which is using to access the table Verzeichnis
- //   private Dao<Verzeichnis, Integer> verzeichnisDao = null;
-  //  private RuntimeExceptionDao<Verzeichnis, Integer> verzeichnisRuntimeDao = null;
+    private Dao<Verzeichnis, Integer> verzeichnisDao = null;
+    private RuntimeExceptionDao<Verzeichnis, Integer> verzeichnisRuntimeDao = null;
 
     // the DAO object which is using to access the table Opened
-  //  private Dao<Opened, Integer> openedDao = null;
-  //  private RuntimeExceptionDao<Opened, Integer> openedRuntimeDao = null;
+    private Dao<Opened, Integer> openedDao = null;
+    private RuntimeExceptionDao<Opened, Integer> openedRuntimeDao = null;
 
 
 
@@ -52,12 +52,14 @@ public class OrmDbHelper extends OrmLiteSqliteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase, ConnectionSource source)
     {
         try {
+            Log.i(OrmDbHelper.class.getSimpleName(), "onCreate()");
             TableUtils.createTable(source, Verzeichnis.class);
             TableUtils.createTable(source, Opened.class);
 
         }catch (SQLException ex)
         {
             Log.e(LOG, "error creating tables", ex);
+            throw new RuntimeException(ex);
         }
     }
 
@@ -81,31 +83,15 @@ public class OrmDbHelper extends OrmLiteSqliteOpenHelper {
 
 
   // Create Data Access Object for Opened
-    public Dao<Opened, Integer> createOpenedDAO()
-    {
-     try {
-         return DaoManager.createDao(connectionSource, Opened.class);
-     } catch (SQLException ex)
-     {
-         Log.e(LOG, "error creating DAO for Opened class", ex);
-     }
-     return null;
-
-
-    }
-
-
-
-    // Create Data Access Object for Verzeichnis
-    public Dao<Verzeichnis, Integer> createVerzeichnisDAO()
-    {
-        try{
-            return DaoManager.createDao(connectionSource, Verzeichnis.class);
-        }catch (SQLException ex)
-        {
-            Log.e(LOG, " error creating DAO for Verzeichnis class", ex);
+    public Dao<Opened, Integer> createOpenedDAO() {
+        try {
+            return DaoManager.createDao(connectionSource, Opened.class);
+        } catch (SQLException ex) {
+            Log.e(LOG, "error creating DAO for Opened class", ex);
         }
         return null;
+
+
     }
 
 
@@ -125,6 +111,20 @@ public class OrmDbHelper extends OrmLiteSqliteOpenHelper {
           }
     }
 
+    /**
+    // Create Data Access Object for Verzeichnis
+    public Dao<Verzeichnis, Integer> createVerzeichnisDAO()
+    {
+        try{
+            return DaoManager.createDao(connectionSource, Verzeichnis.class);
+        }catch (SQLException ex)
+        {
+            Log.e(LOG, " error creating DAO for Verzeichnis class", ex);
+        }
+        return null;
+    }
+
+     **/
 
     public Dao<Verzeichnis, Integer> getVerzeichnisDao() throws SQLException
     {
@@ -134,6 +134,13 @@ public class OrmDbHelper extends OrmLiteSqliteOpenHelper {
         }
         return verzeichnisDao;
     }
+
+    public RuntimeExceptionDao<Verzeichnis, Integer> getVerzeichnisRuntimeDao()
+    {
+        if(verzeichnisRuntimeDao == null) verzeichnisRuntimeDao = getRuntimeExceptionDao(Verzeichnis.class);
+        return verzeichnisRuntimeDao;
+    }
+
 
 
 
@@ -146,8 +153,13 @@ public class OrmDbHelper extends OrmLiteSqliteOpenHelper {
         return openedDao;
     }
 
+    public RuntimeExceptionDao<Opened, Integer> getOpenedRuntimeDao()
+    {
+        if(openedRuntimeDao == null) openedRuntimeDao = getRuntimeExceptionDao(Opened.class);
+        return openedRuntimeDao;
+    }
 
-
+/**
  private void handleVerzeichnisse() throws SQLException
  {    //Beispiel id
        int id;
@@ -179,12 +191,13 @@ public class OrmDbHelper extends OrmLiteSqliteOpenHelper {
 
  }
 
-
+**/
     @Override
     public void close ()
     {
         super.close();
         verzeichnisDao = null;
+        verzeichnisRuntimeDao = null;
         openedDao = null;
     }
 
@@ -241,5 +254,15 @@ public class OrmDbHelper extends OrmLiteSqliteOpenHelper {
         }
         return dbHelper;
     }
+
+    public void updateDirectory(Verzeichnis verzeichnis)
+    {
+     try
+      {
+        verzeichnisDao.update(verzeichnis);
+        } catch (SQLException e)
+         {
+           e.printStackTrace();
+         }
  **/
 }
