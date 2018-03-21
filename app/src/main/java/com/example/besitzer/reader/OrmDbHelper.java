@@ -265,4 +265,28 @@ public class OrmDbHelper extends OrmLiteSqliteOpenHelper {
            e.printStackTrace();
          }
  **/
+    public void updateOpened(Opened opened)
+    {
+        try
+        {
+            openedDao.createOrUpdate(opened);
+
+        }catch (SQLException e)
+         {
+             e.printStackTrace();
+         }
+    }
+
+         public void deleteOpened(Opened opened)
+         {
+             try
+             {
+                 openedDao.deleteById(opened.getId());
+
+             }catch (SQLException e)
+             {
+                 e.printStackTrace();
+             }
+         }
+
 }
