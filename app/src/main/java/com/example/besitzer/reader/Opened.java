@@ -27,7 +27,6 @@ public class Opened {
         this.state = state;
         this.timestamp = timestamp;
         this.filepath = filepath;
-
     }
 
     public int getId(){return id;}

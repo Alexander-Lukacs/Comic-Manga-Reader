@@ -34,7 +34,6 @@ public class Verzeichnis {
         this.filetype = filetype;
         this.hasLeaves = hasLeaves;
 
-
     }
 
     public int getId(){return id;}
