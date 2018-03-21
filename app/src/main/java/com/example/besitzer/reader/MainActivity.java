@@ -7,6 +7,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Adapter;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,6 +26,26 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //---------------------------------------------------------------------------------------
+        // Test(Mockdaten) für die ListView -> Alex bitte für die Logik entfernen
+        ListView view;
+        view = (ListView) findViewById(R.id.browser_list);
+        String [] array = {
+                "Adidas - Kurs: 73,45 €",
+                "Allianz - Kurs: 145,12 €",
+                "BASF - Kurs: 84,27 €",
+                "Bayer - Kurs: 128,60 €",
+                "Beiersdorf - Kurs: 80,55 €",
+                "BMW St. - Kurs: 104,11 €",
+                "Commerzbank - Kurs: 12,47 €",
+                "Continental - Kurs: 209,94 €",
+                "Daimler - Kurs: 84,33 €"
+        };
+        ArrayList<String> werte = new ArrayList(Arrays.asList(array));
+        ArrayAdapter adapter = new ArrayAdapter(this, R.layout.browser_list_item, werte);
+        view.setAdapter(adapter);
+        //---------------------------------------------------------------------------------------
     }
 
     @Override
