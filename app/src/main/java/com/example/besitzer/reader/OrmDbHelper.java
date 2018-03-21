@@ -186,7 +186,6 @@ public class OrmDbHelper extends OrmLiteSqliteOpenHelper {
         super.close();
         verzeichnisDao = null;
         openedDao = null;
-
     }
 
     /*
