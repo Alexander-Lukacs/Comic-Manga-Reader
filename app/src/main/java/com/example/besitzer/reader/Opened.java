@@ -13,7 +13,7 @@ public class Opened {
     private int state;
     @DatabaseField(columnName = "Zeitpunkt")
     private int timestamp;
-    @DatabaseField(foreign=true, columnName = "Dateipfad")
+    @DatabaseField(canBeNull=false, foreign=true, foreignAutoRefresh = true, columnName = "Dateipfad")
     private Verzeichnis filepath;
 
 
@@ -29,6 +29,8 @@ public class Opened {
         this.filepath = filepath;
 
     }
+
+    public int getId(){return id;}
 
     public void setState(int state)
     {

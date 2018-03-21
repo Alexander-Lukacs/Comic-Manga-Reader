@@ -37,6 +37,8 @@ public class Verzeichnis {
 
     }
 
+    public int getId(){return id;}
+
     public void setFilepath(String filepath)
     {
         this.filepath = filepath;
