@@ -29,7 +29,7 @@ public class OrmDbHelper extends OrmLiteSqliteOpenHelper {
     public static final int DB_VERSION = 1;
 
     //the DAO object which is using to access the table Verzeichnis
-    private Dao<Verzeichnis, Integer> verzeichnisDao = null;
+    public Dao<Verzeichnis, Integer> verzeichnisDao = null;
     private RuntimeExceptionDao<Verzeichnis, Integer> verzeichnisRuntimeDao = null;
 
     // the DAO object which is using to access the table Opened
@@ -39,7 +39,7 @@ public class OrmDbHelper extends OrmLiteSqliteOpenHelper {
 
 
 
-     private OrmDbHelper dbHelper = null;
+     //private OrmDbHelper dbHelper = null;
 
 
 
@@ -94,6 +94,16 @@ public class OrmDbHelper extends OrmLiteSqliteOpenHelper {
         return null;
 
 
+    }
+
+    public Dao<Verzeichnis, Integer> createVerzeichnisDao()
+    {
+        try {
+            return DaoManager.createDao(connectionSource, Verzeichnis.class);
+        } catch (SQLException ex) {
+            Log.e(LOG, "error creating DAO for Verzeichnis class", ex);
+        }
+        return null;
     }
 
 
