@@ -307,7 +307,6 @@ public class OrmDbHelper extends OrmLiteSqliteOpenHelper {
             list = queryBuilder.query();
 
 
-
              return list;
          }
 
