@@ -4,8 +4,10 @@ import java.sql.SQLException;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import java.util.List;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
+import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
@@ -287,6 +289,26 @@ public class OrmDbHelper extends OrmLiteSqliteOpenHelper {
              {
                  e.printStackTrace();
              }
+         }
+
+    /**
+     * Return a List of Child_Directorys for a given Directory
+     * @param verzeichnis
+     * @return
+     * @throws SQLException
+     */
+    public List<Verzeichnis> getChildren(Verzeichnis verzeichnis) throws SQLException
+         {
+             List<Verzeichnis> list;
+             QueryBuilder<Verzeichnis, Integer> queryBuilder = verzeichnisDao.queryBuilder();
+
+          //   list= verzeichnisDao.queryforEq("ElterID", verzeichnis.getParentId());
+            queryBuilder.where().eq("ElterID", verzeichnis.getParentId());
+            list = queryBuilder.query();
+
+
+
+             return list;
          }
 
 }
