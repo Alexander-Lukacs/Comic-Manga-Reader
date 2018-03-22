@@ -305,9 +305,33 @@ public class OrmDbHelper extends OrmLiteSqliteOpenHelper {
           //   list= verzeichnisDao.queryforEq("ElterID", verzeichnis.getParentId());
             queryBuilder.where().eq("ElterID", verzeichnis.getParentId());
             list = queryBuilder.query();
+            //queryBuilder.reset();
 
 
              return list;
          }
 
+    /**
+     * return a directory from Database by a given path
+     * @param path
+     * @return
+     * @throws SQLException
+     */
+         public Verzeichnis getByPath(String path) throws SQLException
+         {
+             List<Verzeichnis> list;
+             Verzeichnis verzeichnis;
+             list = verzeichnisDao.queryForEq("Dateipfad", path);
+           //  QueryBuilder<Verzeichnis, Integer> queryBuilder = verzeichnisDao.queryBuilder();
+            // queryBuilder.where().eq("Dateipfad", path);
+            // list = queryBuilder.query();
+
+            verzeichnis = list.get(0);
+            return verzeichnis;
+         }
+
+         public boolean findByPath(String path) throws SQLException
+         {
+
+         }
 }
