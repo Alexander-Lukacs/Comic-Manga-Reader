@@ -330,8 +330,52 @@ public class OrmDbHelper extends OrmLiteSqliteOpenHelper {
             return verzeichnis;
          }
 
-         public boolean findByPath(String path) throws SQLException
+    /**
+     * return true, if the given path is in the Database
+     * else return false
+     * @param path
+     * @return
+     * @throws SQLException
+     */
+    public boolean findByPath(String path) throws SQLException
+         {
+           List<Verzeichnis> list;
+           list = verzeichnisDao.queryForEq("Dateipfad", path);
+           if (list.size() == 0)
+           {
+               return false;
+           }else
+           {
+               return true;
+           }
+         }
+
+    /**
+     * add a Directory to Database
+     * @param path     the path of the Directory
+     * @param parentId the Id of the Parent_Directory
+     * @param name     the name of the Directory
+     * @param type     the type of the Directory
+     * @param hasLaeves true if the Directory has children, else false
+     */
+
+         public void addDirectory(String path, int parentId, String name, int type, boolean hasLaeves)
          {
 
+             Verzeichnis directory = new Verzeichnis();
+
+             directory.setFilepath(path);
+             directory.setParentId(parentId);
+             directory.setFilename(name);
+             directory.setFiletype(type);
+             directory.setHasLeaves(hasLaeves);
+
+             try
+             {
+                 verzeichnisDao.createOrUpdate(directory);
+             } catch (SQLException e)
+               {
+                 e.printStackTrace();
+               }
          }
 }
