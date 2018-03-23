@@ -2,5 +2,8 @@
     <string name="app_name">Comic-Manga-Reader</string>
     <string name="title_activity_main">Browser</string>
     <string name="title_settings">Settings</string>
+    <string name="page_number_description">Current Page Number</string>
     <string name="view_description">Image Content</string>
+    <string name="btn_previous_description">Previous Image</string>
+    <string name="btn_next_description">Next Image</string>
 </resources>
