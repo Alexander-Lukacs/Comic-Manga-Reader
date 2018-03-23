@@ -1,3 +1,5 @@
+package com.example.besitzer.reader;
+
 import android.support.test.InstrumentationRegistry;
 import android.content.Context;
 import org.junit.Before;

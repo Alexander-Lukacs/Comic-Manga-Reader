@@ -1,3 +1,5 @@
+package com.example.besitzer.reader;
+
 import com.example.besitzer.reader.Opened;
 import com.example.besitzer.reader.Verzeichnis;
 

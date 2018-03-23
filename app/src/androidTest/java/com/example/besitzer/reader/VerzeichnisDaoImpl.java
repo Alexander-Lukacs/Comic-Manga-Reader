@@ -1,8 +1,12 @@
+package com.example.besitzer.reader;
+
 import com.example.besitzer.reader.Opened;
 import com.example.besitzer.reader.Verzeichnis;
 
 import java.sql.SQLException;
 import java.util.List;
+
+import com.example.besitzer.reader.VerzeichnisDao;
 import com.j256.ormlite.dao.Dao;
 
 import android.app.*;
@@ -19,13 +23,21 @@ import com.j256.ormlite.stmt.QueryBuilder;
 
 public class VerzeichnisDaoImpl implements VerzeichnisDao {
     private Context context;
-    public Dao<Verzeichnis, Integer> verzeichnisDao = null;
-    public Dao<Opened, Integer> openedDao = null;
-    OrmDbHelper helper = OpenHelperManager.getHelper(context.getApplicationContext(), OrmDbHelper.class);
 
+    public Dao<Opened, Integer> openedDao = null;
+    OrmDbHelper helper; //= OpenHelperManager.getHelper(context.getApplicationContext(), OrmDbHelper.class);
+    public Dao<Verzeichnis, Integer> verzeichnisDao;
     public VerzeichnisDaoImpl(Context context)
 
     {
+
+        helper = OpenHelperManager.getHelper(context.getApplicationContext(), OrmDbHelper.class);
+
+        try {
+            verzeichnisDao = helper.getVerzeichnisDao();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 /**
  content://Verzeichnisse
  content://database/Verzeichnisse

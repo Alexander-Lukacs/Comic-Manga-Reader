@@ -1,3 +1,5 @@
+package com.example.besitzer.reader;
+
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import com.example.besitzer.reader.OrmDbHelper;
@@ -69,7 +71,7 @@ public class VerzeichnisDaoImplTest {
 
         assertEquals("ComicBooc/Psychopath", v2.getFilepath());
          **/
-        VerzeichnisDao dao = new VerzeichnisDaoImpl(context);
+        VerzeichnisDao dao = new VerzeichnisDaoImpl(context.getApplicationContext());
 
 
 
