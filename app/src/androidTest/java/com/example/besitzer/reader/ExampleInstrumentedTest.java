@@ -30,6 +30,7 @@ public class ExampleInstrumentedTest {
     Verzeichnis directory = new Verzeichnis();
     Verzeichnis directorychild_one = new Verzeichnis();
     Verzeichnis directorychild_two = new Verzeichnis();
+    VerzeichnisDaoImpl dao;
 
 
     @Before
@@ -40,7 +41,7 @@ public class ExampleInstrumentedTest {
 
         helper = OpenHelperManager.getHelper(context.getApplicationContext(), OrmDbHelper.class);
         verzeichnisDao = helper.createVerzeichnisDao();
-        //directory.setId(1);
+       // directory.setId(1);
         directory.setFilename("Psychopath");
         directory.setFilepath("ComicBooc/Psychopath");
         directory.setFiletype(1);
@@ -60,21 +61,19 @@ public class ExampleInstrumentedTest {
         directorychild_two.setFiletype(1);
         directorychild_two.setHasLeaves(false);
         directorychild_two.setParentId(1);
+
+        dao = new VerzeichnisDaoImpl(context);
     }
 
     @Test
     public void addDirectory() throws Exception {
-        /**
-
-         verzeichnisDao.createOrUpdate(directory);
+        dao.addDirectory(directory.getFilepath(), directory.getParentId(), directory.getFilename(), directory.getFiletype(), directory.getHasLeaves());
 
 
          Verzeichnis v2 = verzeichnisDao.queryForId(1);
 
 
          assertEquals("ComicBooc/Psychopath", v2.getFilepath());
-         **/
-        VerzeichnisDao dao = new VerzeichnisDaoImpl(context.getApplicationContext());
 
 
 
@@ -86,50 +85,35 @@ public class ExampleInstrumentedTest {
         int anzahl;
         boolean found;
         verzeichnisDao.createOrUpdate(directory);
-        List<Verzeichnis> list;
-        list = verzeichnisDao.queryForEq("Dateipfad", "ComicBooc/Psychopath");
+        found = dao.findByPath(directory.getFilepath());
 
-        if (list.size() == 0)
-        {
-            found = false;
-        }else
-        {
-            found = true;
-        }
-        //anzahl = list.size();
         assertEquals(true, found);
     }
 
     @Test
     public void testfindByPath() throws Exception{
-        int anzahl;
         boolean found;
         verzeichnisDao.createOrUpdate(directory);
-        List<Verzeichnis> list;
-        list = verzeichnisDao.queryForEq("Dateipfad", "ComicBooc/Mob");
+        found = dao.findByPath("ComicBooc/MOB");
 
-        if (list.size() == 0)
-        {
-            found = false;
-        }else
-        {
-            found = true;
-        }
-        //anzahl = list.size();
+
         assertEquals(false, found);
 
     }
     @Test
     public void getByPath() throws Exception {
         verzeichnisDao.createOrUpdate(directory);
-        List<Verzeichnis> list;
+
         Verzeichnis verzeichnis;
-        list = verzeichnisDao.queryForEq("Dateipfad", "ComicBooc/Psychopath");
-        verzeichnis = list.get(0);
+        verzeichnis = dao.getByPath("ComicBooc/Psychopath");
+
 
         assertEquals("ComicBooc/Psychopath", verzeichnis.getFilepath());
     }
 
+  // liefert bei fest gesetzer Id für directory bei jedem neuen Durchlauf +2 --> nach 10 durchläufen also 20 Kinder
+  // liegt vermutlich daran, dass das System bei jedem neu erstellten objekt eine neue ID vergibt.
+    //Da die ID immer unterschiedlich ist, erzeugt create or Update jedes mal einen neuen Eintrag, anstatt ihn upzudaten
     @Test
     public void getChildren() throws Exception {
         int anzahl_children;
@@ -138,11 +122,7 @@ public class ExampleInstrumentedTest {
         verzeichnisDao.createOrUpdate(directorychild_two);
 
         List<Verzeichnis> list;
-        QueryBuilder<Verzeichnis, Integer> queryBuilder = verzeichnisDao.queryBuilder();
-
-        queryBuilder.where().eq("ElterID", directory.getParentId());
-        list = queryBuilder.query();
-        // list = verzeichnisDao.queryForEq("ElterID", directory.getId());
+        list = dao.getChildren(directory);
         anzahl_children = list.size();
         assertEquals(2, anzahl_children);
     }
@@ -151,11 +131,10 @@ public class ExampleInstrumentedTest {
     @Test
     public void testegetByPath() throws Exception
     {
-        VerzeichnisDaoImpl dao = new VerzeichnisDaoImpl(context);
+
         verzeichnisDao.createOrUpdate(directory);
         Verzeichnis verzeichnis;
         verzeichnis = dao.getByPath(directory.getFilepath());
-        // verzeichnis = helper.getByPath(directory.getFilepath());
         assertEquals("ComicBooc/Psychopath", verzeichnis.getFilepath());
 
     }

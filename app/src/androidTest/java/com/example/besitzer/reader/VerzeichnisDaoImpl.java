@@ -128,10 +128,11 @@ public class VerzeichnisDaoImpl implements VerzeichnisDao {
     public List<Verzeichnis> getChildren(Verzeichnis verzeichnis) throws SQLException
     {
         List<Verzeichnis> list;
-        QueryBuilder<Verzeichnis, Integer> queryBuilder = verzeichnisDao.queryBuilder();
+       // QueryBuilder<Verzeichnis, Integer> queryBuilder = verzeichnisDao.queryBuilder();
 
-        queryBuilder.where().eq("ElterID", verzeichnis.getId());
-        list = queryBuilder.query();
+        //queryBuilder.where().eq("ElterID", verzeichnis.getId());
+        //list = queryBuilder.query();
+        list = verzeichnisDao.queryForEq("ElterID", verzeichnis.getId());
         //queryBuilder.reset();
 
 
