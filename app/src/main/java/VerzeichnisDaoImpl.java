@@ -4,8 +4,10 @@ import com.example.besitzer.reader.Verzeichnis;
 import java.sql.SQLException;
 import java.util.List;
 import com.j256.ormlite.dao.Dao;
+
 import android.app.*;
 import android.app.Application;
+import android.content.ContentProvider;
 import android.content.Context;
 import com.example.besitzer.reader.OrmDbHelper;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
@@ -19,14 +21,21 @@ public class VerzeichnisDaoImpl implements VerzeichnisDao {
     private Context context;
     public Dao<Verzeichnis, Integer> verzeichnisDao = null;
     public Dao<Opened, Integer> openedDao = null;
+    OrmDbHelper helper = OpenHelperManager.getHelper(context.getApplicationContext(), OrmDbHelper.class);
 
     public VerzeichnisDaoImpl(Context context)
 
     {
-        this.context = context;
-    }
-    private OrmDbHelper helper = OpenHelperManager.getHelper(context.getApplicationContext(), OrmDbHelper.class);
+/**
+ content://Verzeichnisse
+ content://database/Verzeichnisse
+ content://database/Opened
+ content://database/Verzeichnisse/1
+ content://database/Verzeichnisse/2
+ android.permission.READ_
+ **/
 
+    }
 
 
     /**
@@ -109,7 +118,7 @@ public class VerzeichnisDaoImpl implements VerzeichnisDao {
         List<Verzeichnis> list;
         QueryBuilder<Verzeichnis, Integer> queryBuilder = verzeichnisDao.queryBuilder();
 
-        queryBuilder.where().eq("ElterID", verzeichnis.getParentId());
+        queryBuilder.where().eq("ElterID", verzeichnis.getId());
         list = queryBuilder.query();
         //queryBuilder.reset();
 
