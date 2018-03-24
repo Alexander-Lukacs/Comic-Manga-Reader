@@ -35,7 +35,7 @@ public class Verzeichnis {
         this.hasLeaves = hasLeaves;
 
     }
-    //public void setId(int id){this.id = id;}
+    public void setId(int id){this.id = id;}
 
     public int getId(){return id;}
 

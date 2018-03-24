@@ -41,21 +41,21 @@ public class ExampleInstrumentedTest {
 
         helper = OpenHelperManager.getHelper(context.getApplicationContext(), OrmDbHelper.class);
         verzeichnisDao = helper.createVerzeichnisDao();
-       // directory.setId(1);
+        directory.setId(1);
         directory.setFilename("Psychopath");
         directory.setFilepath("ComicBooc/Psychopath");
         directory.setFiletype(1);
         directory.setHasLeaves(true);
         directory.setParentId(0);
 
-        //   directorychild_one.setId(2);
+        directorychild_one.setId(2);
         directorychild_one.setFilename("Psychopath");
         directorychild_one.setFilepath("ComicBooc/Psychopath/Chapter1");
         directorychild_one.setFiletype(1);
         directorychild_one.setHasLeaves(false);
         directorychild_one.setParentId(1);
 
-        // directorychild_two.setId(3);
+        directorychild_two.setId(3);
         directorychild_two.setFilename("Psychopath");
         directorychild_two.setFilepath("ComicBooc/Psychopath/Chapter2");
         directorychild_two.setFiletype(1);
