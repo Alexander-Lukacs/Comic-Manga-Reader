@@ -1,5 +1,10 @@
 package com.example.besitzer.logik;
 
+import com.example.besitzer.util.Directory;
+
+import org.apache.commons.io.FilenameUtils;
+
+import java.io.File;
 import java.util.List;
 
 /**
@@ -84,10 +89,45 @@ public class ComicDirectoryScanner {
      * WARNING: this method is expensive. It consumes large amounts of time and memory for large
      *          directory structures. Do not call more often than necessary.
      *
-     * @param directory the directory to scan and carry over into the database
+     * @param directory the !ABSOLUTE PATH! to scan and carry over into the database
      */
     public static void FullScan(String directory){
-        //TODO: implement
+        //TODO: DAO if(directory exists in DB)
+        {//we're good, keep scanning the children
+            File fileDirectory = new File(directory);
+            if(fileDirectory!=null)
+            {
+                if (fileDirectory.isDirectory())
+                {
+                    File[] children = fileDirectory.listFiles();
+                    if (children.length == 0)
+                    {//directory is empty. should we do something?
+
+                    }
+                    else
+                    {//TODO: we have children. scan them!
+                        for(File child : children){
+                            FullScan(child.getAbsolutePath());
+                        }
+                    }
+                }
+                else
+                {
+                    if (fileDirectory.isFile())
+                    {//we're a file. get the extension and compare to DB
+
+                    } else
+                    {//spooky error! we're neither file nor directory
+
+                    }
+                }
+            }
+        }//TODO: after DAO is done, uncomment the next line
+//      else
+        {//directory doesn't exist in DB, add it!
+            //TODO: DAO
+        }
+
     }
 
     /**
@@ -103,7 +143,24 @@ public class ComicDirectoryScanner {
      * @param directory
      */
     public static void QuickScan(String directory){
-        //TODO: implement
+        File dirFile = new File(directory);
+        if(dirFile != null) {
+            //TODO: DAO if(entry is already in DB)
+            //TODO: DAO uncomment the following lines
+            //{
+            //   return;
+            //}else{ //if it's not in the DB we have to fullscan.
+            //   FullScan(directory);
+            //}
+            if (dirFile.isDirectory()) {
+                for(File child : dirFile.listFiles()){
+                    QuickScan(child.getAbsolutePath());
+                }
+            } else {
+                return;
+            }
+        }
+
     }
 
 
