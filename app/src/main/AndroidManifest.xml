@@ -30,6 +30,8 @@
             android:theme="@style/AppTheme.NoActionBar">
 
         </activity>
+
+        <service android:name="com.example.besitzer.logik.ComicDirectoryScannerService" />
     </application>
 
 </manifest>
