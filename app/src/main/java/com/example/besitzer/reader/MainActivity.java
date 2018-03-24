@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
                 "Daimler - Kurs: 84,33 €"
         };
         ArrayList<String> werte = new ArrayList(Arrays.asList(array));
-        ArrayAdapter adapter = new ArrayAdapter(this, R.layout.browser_list_item, werte);
+        ArrayAdapter adapter = new ArrayAdapter(this, R.layout.browser_list_item, R.id.browser_list_item_text, werte);
         view.setAdapter(adapter);
         //---------------------------------------------------------------------------------------
     }
