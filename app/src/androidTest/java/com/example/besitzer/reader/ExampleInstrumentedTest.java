@@ -4,9 +4,11 @@ import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.example.besitzer.reader.Datenbank.OrmDbHelper;
+import com.example.besitzer.reader.Datenbank.Verzeichnis;
+import com.example.besitzer.reader.Datenbank.VerzeichnisDaoImpl;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.stmt.QueryBuilder;
 
 import org.junit.Before;
 import org.junit.Test;

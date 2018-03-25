@@ -1,11 +1,11 @@
-package com.example.besitzer.reader;
+package com.example.besitzer.reader.Datenbank;
 
 import java.sql.SQLException;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import java.util.List;
-import com.j256.ormlite.android.apptools.OpenHelperManager;
+
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.dao.Dao;
@@ -13,10 +13,6 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
-
-
-
-import java.sql.SQLException;
 
 /**
  * Created by robin on 20.03.18.

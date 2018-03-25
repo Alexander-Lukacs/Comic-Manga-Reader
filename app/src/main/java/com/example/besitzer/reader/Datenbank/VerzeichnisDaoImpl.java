@@ -1,21 +1,13 @@
-package com.example.besitzer.reader;
-
-import com.example.besitzer.reader.Opened;
-import com.example.besitzer.reader.Verzeichnis;
+package com.example.besitzer.reader.Datenbank;
 
 import java.sql.SQLException;
 import java.util.List;
 
-import com.example.besitzer.reader.VerzeichnisDao;
 import com.j256.ormlite.dao.Dao;
 
-import android.app.*;
-import android.app.Application;
-import android.content.ContentProvider;
 import android.content.Context;
-import com.example.besitzer.reader.OrmDbHelper;
+
 import com.j256.ormlite.android.apptools.OpenHelperManager;
-import com.j256.ormlite.stmt.QueryBuilder;
 
 /**
  * Created by robin on 22.03.18.

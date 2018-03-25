@@ -1,7 +1,6 @@
-package com.example.besitzer.reader;
+package com.example.besitzer.reader.Datenbank;
 
-import com.example.besitzer.reader.Opened;
-import com.example.besitzer.reader.Verzeichnis;
+import com.example.besitzer.reader.Datenbank.Verzeichnis;
 
 import java.sql.SQLException;
 import java.util.List;
