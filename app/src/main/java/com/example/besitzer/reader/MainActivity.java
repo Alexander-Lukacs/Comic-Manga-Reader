@@ -7,14 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Adapter;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import com.example.besitzer.logik.BrowserListAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
 
         //---------------------------------------------------------------------------------------
         // Test(Mockdaten) für die ListView -> Alex bitte für die Logik entfernen
-        ListView view;
+        /*ListView view;
         view = (ListView) findViewById(R.id.browser_list);
         String [] array = {
                 "Adidas - Kurs: 73,45 €",
@@ -44,7 +39,23 @@ public class MainActivity extends AppCompatActivity {
         };
         ArrayList<String> werte = new ArrayList(Arrays.asList(array));
         ArrayAdapter adapter = new ArrayAdapter(this, R.layout.browser_list_item, R.id.browser_list_item_text, werte);
+        view.setAdapter(adapter);*/
+
+        String [] itemname = {
+                "Adidas - Kurs: 73,45 €",
+                "Allianz - Kurs: 145,12 €"
+        };
+
+        Integer [] imgid = {
+                R.drawable.directory,
+                R.drawable.resource
+        };
+
+        ListView view;
+        view =(ListView)findViewById(R.id.browser_list);
+        BrowserListAdapter adapter = new BrowserListAdapter(this, itemname, imgid);
         view.setAdapter(adapter);
+
         //---------------------------------------------------------------------------------------
     }
 
