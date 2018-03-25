@@ -1,134 +1,111 @@
 package com.example.besitzer.logik;
 
+import android.content.Context;
+import android.util.Log;
+
+import com.example.besitzer.reader.Datenbank.VerzeichnisDao;
+import com.example.besitzer.reader.Datenbank.VerzeichnisDaoImpl;
 import com.example.besitzer.util.Directory;
 
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
  * This class provides functions that are used when scanning the designated comic directory
  * for changes (new files? old files deleted?)
- *
+ * <p>
  * At several occasions the "last proper scan" is mentioned.
  * A proper scan consists of searching the comic directory for changes
  * and copying these changes to the database.
- *
+ * <p>
  * These scans are implemented in the Methods "FullScan" and "QuickScan" of this Class.
  * The differences between a QuickScan and a FullScan are explained in the method documentations.
- *
  */
 
 public class ComicDirectoryScanner {
 
     /**
-     * For a given directory Path and a list of its known(saved in the database) direct children,
-     * this function returns all direct children of that directory, which aren't known.
-     *
-     * @param directory the directory to scan for unknown children
-     * @param knownChildren the list of known direct children of a directory
-     * @return list of children that were newly created since the last proper scan
-     */
-    private static List<String> findUnknownChildren(String directory, List<String> knownChildren){
-        List<String> unknownChildren = findChildren(directory); // 1. get list of children of the directory
-        for(String child : unknownChildren){    // 2. remove all the known children from that list
-            if(knownChildren.contains(child)){
-                unknownChildren.remove(child);
-            }
-        }
-        return unknownChildren; // 3. return the list
-    }
-
-    /**
-     * For a given directory Path and a list of its known(saved in the database) direct children,
-     * this function returns all known children which are no longer present.
-     *
-     * @param directory the directory to scan for unknown children
-     * @param knownChildren the list of known direct children of a directory
-     * @return list of children that were deleted since the last proper scan
-     */
-    private static List<String> findRemovedChildren(String directory, List<String> knownChildren){
-        List<String> RemovedChildren = knownChildren; // rename the parameter
-        List<String> currentChildren = findChildren(directory); // 1. get the current list of children
-        for (String child : RemovedChildren) { // 2. remove all the children that haven't been deleted
-            if(currentChildren.contains(child)){
-                RemovedChildren.remove(child);
-            }
-        }
-        return RemovedChildren; // 3. return the list
-    }
-
-    /**
-     * For a given directory Path and a list of its known(saved in the database) direct and indirect
-     * children, this function returns all direct children of that directory, which aren't known.
-     *
-     * @param directory the directory to scan for unknown children
-     * @param knownChildren the list of known direct or indirect children of a directory
-     * @return list of children that were newly created since the last proper scan
-     */
-    private static List<String> findUnknownChildrenRecursive(String directory, List<String> knownChildren){
-        return null;
-        //TODO: implement
-    }
-
-    /**
-     * returns all direct child directories of a given directory
-     * @param directory the given directory path
-     * @return list of current child directories
-     */
-    private static List<String> findChildren(String directory){
-        return null;
-        //TODO: implement
-    }
-
-    /**
      * For a given directory (usually the comic reader directory), recursively scan for added or
      * removed files and carry over those changes into the database
-     *
+     * <p>
      * WARNING: this method is expensive. It consumes large amounts of time and memory for large
-     *          directory structures. Do not call more often than necessary.
+     * directory structures. Do not call more often than necessary.
      *
      * @param directory the !ABSOLUTE PATH! to scan and carry over into the database
      */
-    public static void FullScan(String directory){
-        //TODO: DAO if(directory exists in DB)
-        {//we're good, keep scanning the children
-            File fileDirectory = new File(directory);
-            if(fileDirectory!=null)
-            {
-                if (fileDirectory.isDirectory())
-                {
-                    File[] children = fileDirectory.listFiles();
-                    if (children.length == 0)
-                    {//directory is empty. should we do something?
+    public static void FullScan(String directory, Context context) {
+        VerzeichnisDao dirdao = new VerzeichnisDaoImpl(context);
 
-                    }
-                    else
-                    {//TODO: we have children. scan them!
-                        for(File child : children){
-                            FullScan(child.getAbsolutePath());
+        File dirFile = new File(directory);
+
+        boolean isInDB = false;
+        try {
+            isInDB = dirdao.findByPath(dirFile.getAbsolutePath());
+        } catch (SQLException e) {
+            Log.e("ComicDirectoryScanner", e.toString());
+        }
+        if (dirFile != null) {
+            if (isInDB) {//we're good, keep scanning the children
+
+                if (dirFile != null) {
+                    if (dirFile.isDirectory()) {
+                        File[] children = dirFile.listFiles();
+                        if (children.length == 0) {//directory is empty. should we do something?
+                            //nah...
+                        } else {
+                            for (File child : children) {
+                                FullScan(child.getAbsolutePath(), context);
+                            }
+                        }
+                    } else {
+                        if (dirFile.isFile()) {//we're a file. get the extension and compare to DB
+
+                        } else {//spooky error! we're neither file nor directory
+                            Log.e("ComicDirectoryScanner",
+                                    "File in path \""
+                                            + directory
+                                            + "\" is apparently neither file nor directory");
                         }
                     }
                 }
-                else
-                {
-                    if (fileDirectory.isFile())
-                    {//we're a file. get the extension and compare to DB
-
-                    } else
-                    {//spooky error! we're neither file nor directory
-
-                    }
+            } else {//directory doesn't exist in DB, add it!
+                try {
+                    dirdao.addDirectory(
+                            directory,
+                            dirdao.getByPath(dirFile.getParent()).getId(),
+                            FilenameUtils.getName(directory),
+                            Directory.extensionToType(directory),
+                            checkForLeaves(dirFile)
+                    );
+                } catch (SQLException e) {
+                    Log.e("ComicDirectoryScanner", e.toString());
                 }
             }
-        }//TODO: after DAO is done, uncomment the next line
-//      else
-        {//directory doesn't exist in DB, add it!
-            //TODO: DAO
         }
 
     }
+
+    /**
+     * checks wether the "hasleaves property for a given directory should be true.
+     * that is defined to be true when the directory does not have any child directories, only files or nothing.
+     * @param directory
+     * @return hasleaves
+     */
+    private static boolean checkForLeaves(File directory){
+        boolean hasleaves = true; //unless we find a directory in the children, we're good.
+        if(directory.listFiles()!=null) {
+            for (File child : directory.listFiles()) {
+                if (child.isDirectory()) {
+                    hasleaves=false;
+                }
+            }
+        }
+        return hasleaves;
+    }
+
 
     /**
      * For a given directory (usually the comic reader directory), recursively scan for added or
@@ -137,24 +114,32 @@ public class ComicDirectoryScanner {
      * If any changes are detected, Fullscan is invoked for the given directory.
      * This Method is NOT meant to replace Fullscan completely.
      * QuickScan's scan accuracy is limited for the sake of performance.
-     *
+     * <p>
      * To keep the Database accurate, one must sometimes manually call FullScan.
      * This is designed to be done from the DatabaseService Class.
+     *
      * @param directory
      */
-    public static void QuickScan(String directory){
+
+    public static void QuickScan(String directory, Context context) {
+        VerzeichnisDao dirdao = new VerzeichnisDaoImpl(context);
         File dirFile = new File(directory);
-        if(dirFile != null) {
-            //TODO: DAO if(entry is already in DB)
-            //TODO: DAO uncomment the following lines
-            //{
-            //   return;
-            //}else{ //if it's not in the DB we have to fullscan.
-            //   FullScan(directory);
-            //}
+        boolean isInDB = false;
+        try {
+            isInDB = dirdao.findByPath(dirFile.getAbsolutePath());
+        } catch (SQLException e) {
+            Log.e("ComicDirectoryScanner", e.toString());
+        }
+        if (dirFile != null) {
+            if (isInDB) {//if entry is already in DB)
+
+                return;
+            } else { //if it's not in the DB we have to fullscan.
+                FullScan(directory, context);
+            }
             if (dirFile.isDirectory()) {
-                for(File child : dirFile.listFiles()){
-                    QuickScan(child.getAbsolutePath());
+                for (File child : dirFile.listFiles()) {
+                    QuickScan(child.getAbsolutePath(), context);
                 }
             } else {
                 return;
