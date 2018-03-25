@@ -1,4 +1,4 @@
-package com.example.besitzer.reader;
+package com.example.besitzer.reader.Datenbank;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -10,6 +10,8 @@ import android.view.MenuItem;
 import android.widget.ListView;
 
 import com.example.besitzer.logik.BrowserListAdapter;
+
+import com.example.besitzer.reader.R;
 
 public class MainActivity extends AppCompatActivity {
 
