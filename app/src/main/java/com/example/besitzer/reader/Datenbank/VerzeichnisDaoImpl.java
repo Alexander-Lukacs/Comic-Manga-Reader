@@ -6,6 +6,7 @@ import java.util.List;
 import com.j256.ormlite.dao.Dao;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 
@@ -14,6 +15,27 @@ import com.j256.ormlite.android.apptools.OpenHelperManager;
  */
 
 public class VerzeichnisDaoImpl implements VerzeichnisDao {
+    @Override
+    public void setHasLeaves(int directoryId, boolean hasLeaves) throws SQLException {
+        Verzeichnis directory;
+        directory = verzeichnisDao.queryForId(directoryId);
+        directory.setHasLeaves(hasLeaves);
+        verzeichnisDao.update(directory);
+    }
+
+    @Override
+    public void setHasLeaves(String path, boolean hasLeaves) throws SQLException {
+        Verzeichnis directory;
+        List<Verzeichnis> list= verzeichnisDao.queryForEq("Dateipfad", path);
+        if(list==null || list.size()<1){
+            Log.v("VerzeichnisDAO", "SQLException on call: getByPath("+path+");");
+            throw new SQLException("The Directory with the path\""+ path + "\" does not exist in the database. Can't set hasLeaves property.");
+        }
+        directory = list.get(0);
+        directory.setHasLeaves(hasLeaves);
+        verzeichnisDao.update(directory);
+    }
+
     private Context context;
 
     public Dao<Opened, Integer> openedDao = null;
@@ -106,9 +128,15 @@ public class VerzeichnisDaoImpl implements VerzeichnisDao {
         List<Verzeichnis> list;
         Verzeichnis verzeichnis;
         list = verzeichnisDao.queryForEq("Dateipfad", path);
+        if(list==null || list.size()<1){
+            Log.v("VerzeichnisDAO", "SQLException on call: getByPath("+path+");");
+            throw new SQLException("The directory \"" +path+ "\" doesn't exist in the DB.");
+        }
         verzeichnis = list.get(0);
         return verzeichnis;
     }
+
+
 
 
     /**

@@ -1,8 +1,13 @@
 package com.example.besitzer.reader;
 
+import android.Manifest;
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -11,6 +16,7 @@ import android.widget.ListView;
 
 import com.example.besitzer.logik.BrowserListAdapter;
 
+import com.example.besitzer.logik.ComicDirectoryScannerService;
 import com.example.besitzer.reader.R;
 
 public class MainActivity extends AppCompatActivity {
@@ -19,9 +25,18 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        ActivityCompat.requestPermissions(
+                this,
+                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                1
+        );
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if(! isServiceRunning(ComicDirectoryScannerService.class)){
+            getApplicationContext().startService(new Intent(this, ComicDirectoryScannerService.class));
+        }
         setSupportActionBar(toolbar);
 
         //---------------------------------------------------------------------------------------
@@ -83,6 +98,19 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * checks wether a given service is running
+     */
+    private boolean isServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

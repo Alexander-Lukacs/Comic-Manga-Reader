@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.example.besitzer.reader.Datenbank.VerzeichnisDao;
 import com.example.besitzer.reader.Datenbank.VerzeichnisDaoImpl;
+import com.example.besitzer.util.ComicBookDirectoryFinder;
 import com.example.besitzer.util.Directory;
 
 import org.apache.commons.io.FilenameUtils;
@@ -80,26 +81,40 @@ public class ComicDirectoryScanner {
                             Directory.extensionToType(directory),
                             checkForLeaves(dirFile)
                     );
-                } catch (SQLException e) {
-                    Log.e("ComicDirectoryScanner", e.toString());
+                    if (dirFile.isDirectory() && !directory.equals(ComicBookDirectoryFinder.getComicBookDirectoryPath())) {
+                        dirdao.setHasLeaves(dirFile.getParent(), false);
+                    }
+                }catch (SQLException e) {
+                    if(directory.equals(ComicBookDirectoryFinder.getComicBookDirectoryPath())){
+                        dirdao.addDirectory(
+                                directory,
+                                0,
+                                FilenameUtils.getName(directory),
+                                Directory.extensionToType(directory),
+                                checkForLeaves(dirFile));
+                    }else {
+                        Log.e("ComicDirectoryScanner", "this happened: " + e.toString());
+                    }
                 }
             }
         }
-
     }
+
+
 
     /**
      * checks wether the "hasleaves property for a given directory should be true.
      * that is defined to be true when the directory does not have any child directories, only files or nothing.
+     *
      * @param directory
      * @return hasleaves
      */
-    private static boolean checkForLeaves(File directory){
+    public static boolean checkForLeaves(File directory) {
         boolean hasleaves = true; //unless we find a directory in the children, we're good.
-        if(directory.listFiles()!=null) {
+        if (directory.listFiles() != null) {
             for (File child : directory.listFiles()) {
                 if (child.isDirectory()) {
-                    hasleaves=false;
+                    hasleaves = false;
                 }
             }
         }

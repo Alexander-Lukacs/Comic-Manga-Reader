@@ -14,6 +14,10 @@ public interface VerzeichnisDao {
     public boolean findByPath(String path)throws SQLException;
     public Verzeichnis getByPath(String path)throws SQLException;
     public List<Verzeichnis> getChildren(Verzeichnis verzeichnis)throws SQLException;
+
+    public void setHasLeaves(int Id, boolean hasLeaves) throws SQLException;
+    public void setHasLeaves(String path, boolean hasleaves) throws SQLException;
+
    // public void deleteOpened(Opened opened);
    // public void updateOpened(Opened opened);
 }
