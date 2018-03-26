@@ -1,4 +1,4 @@
-package com.example.besitzer.reader.Datenbank;
+package com.example.besitzer.reader;
 
 import android.app.Activity;
 import android.content.Intent;
