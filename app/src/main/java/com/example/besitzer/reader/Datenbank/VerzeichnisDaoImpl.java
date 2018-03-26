@@ -28,8 +28,7 @@ public class VerzeichnisDaoImpl implements VerzeichnisDao {
         Verzeichnis directory;
         List<Verzeichnis> list= verzeichnisDao.queryForEq("Dateipfad", path);
         if(list==null || list.size()<1){
-            Log.v("VerzeichnisDAO", "SQLException on call: getByPath("+path+");");
-            throw new SQLException("The Directory with the path\""+ path + "\" does not exist in the database. Can't set hasLeaves property.");
+            throw new SQLException("SQLException on call: getByPath("+path+"): " + "The Directory with the path\""+ path + "\" does not exist in the database. Can't set hasLeaves property.");
         }
         directory = list.get(0);
         directory.setHasLeaves(hasLeaves);
@@ -129,8 +128,7 @@ public class VerzeichnisDaoImpl implements VerzeichnisDao {
         Verzeichnis verzeichnis;
         list = verzeichnisDao.queryForEq("Dateipfad", path);
         if(list==null || list.size()<1){
-            Log.v("VerzeichnisDAO", "SQLException on call: getByPath("+path+");");
-            throw new SQLException("The directory \"" +path+ "\" doesn't exist in the DB.");
+            throw new SQLException("SQLException on call: getByPath("+path+"):" + " The directory \"" +path+ "\" doesn't exist in the DB.");
         }
         verzeichnis = list.get(0);
         return verzeichnis;
