@@ -29,6 +29,8 @@ public class Opened {
         this.filepath = filepath;
     }
 
+    public void setId(int id) {this.id = id;}
+
     public int getId(){return id;}
 
     public void setState(int state)
