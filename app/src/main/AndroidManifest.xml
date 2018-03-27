@@ -31,10 +31,6 @@
 
         <service android:name="com.example.besitzer.logik.ComicDirectoryScannerService" />
         <service
-            android:name=".ViewerDataService"
-            android:enabled="true"
-            android:exported="true" />
-        <service
             android:name=".FileBrowserDataService"
             android:enabled="true"
             android:exported="true"></service>

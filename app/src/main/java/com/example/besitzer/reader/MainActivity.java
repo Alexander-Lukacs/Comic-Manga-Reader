@@ -41,7 +41,6 @@ public class MainActivity extends AppCompatActivity {
     private VerzeichnisDao daodir;
     private OpenedDao daoopen;
 
-    private ViewerDataService viewerDataService;
     private FileBrowserDataService fileBrowserDataService;
 
     @Override
