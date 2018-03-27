@@ -39,9 +39,6 @@ public class ComicDirectoryScanner {
      */
     public static void FullScan(String directory, Context context) {
         VerzeichnisDao dirdao = new VerzeichnisDaoImpl(context);
-        //TODO: remove following line:
-        dirdao.debugLogTable();
-
         File dirFile = new File(directory);
 
         boolean isInDB = false;
@@ -56,11 +53,14 @@ public class ComicDirectoryScanner {
                 if (dirFile != null) {
                     if (dirFile.isDirectory()) {
                         File[] children = dirFile.listFiles();
-                        if (children.length == 0) {//directory is empty. should we do something?
-                            //nah...
-                        } else {
-                            for (File child : children) {
-                                FullScan(child.getAbsolutePath(), context);
+                        if(children!=null) {
+                            if (children.length == 0) {//directory is empty. should we do something?
+                                //nah...
+                            } else {
+
+                                for (File child : children) {
+                                    FullScan(child.getAbsolutePath(), context);
+                                }
                             }
                         }
                     } else {
@@ -160,9 +160,12 @@ public class ComicDirectoryScanner {
             } else { //if it's not in the DB we have to fullscan.
                 FullScan(directory, context);
             }
-            if (dirFile.isDirectory()) {
-                for (File child : dirFile.listFiles()) {
-                    QuickScan(child.getAbsolutePath(), context);
+            if (dirFile.isDirectory()) {// keep scanning inside!
+                File[] listFiles = dirFile.listFiles();
+                if(listFiles != null){
+                    for (File child : dirFile.listFiles()) {
+                        QuickScan(child.getAbsolutePath(), context);
+                    }
                 }
             } else {
                 return;
