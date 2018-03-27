@@ -25,6 +25,7 @@ import com.example.besitzer.logik.BrowserListAdapter;
 import com.example.besitzer.logik.ComicDirectoryScannerService;
 import com.example.besitzer.reader.Datenbank.OpenedDao;
 import com.example.besitzer.reader.Datenbank.OpenedDaoImpl;
+import com.example.besitzer.reader.Datenbank.Verzeichnis;
 import com.example.besitzer.reader.Datenbank.VerzeichnisDao;
 import com.example.besitzer.reader.Datenbank.VerzeichnisDaoImpl;
 import com.example.besitzer.reader.R;
@@ -41,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
     private VerzeichnisDao daodir;
     private OpenedDao daoopen;
 
-    private ViewerDataService viewerDataService;
     private FileBrowserDataService fileBrowserDataService;
 
     @Override
@@ -65,18 +65,13 @@ public class MainActivity extends AppCompatActivity {
         if(! isServiceRunning(ComicDirectoryScannerService.class)){
             getApplicationContext().startService(new Intent(this, ComicDirectoryScannerService.class));
         }
-        if(!isServiceRunning(FileBrowserDataService.class)){
-            bindService(
-                    new Intent(MainActivity.this, FileBrowserDataService.class),
-                    mConnection,
-                    Context.BIND_AUTO_CREATE
-            );
-        }
-
+        bindService(
+                new Intent(MainActivity.this, FileBrowserDataService.class),
+                mConnection,
+                Context.BIND_AUTO_CREATE
+        );
         setSupportActionBar(toolbar);
 
-        Log.v("MainActivityCreation", "before openDirectory()");
-        openDirectory(ComicBookDirectoryFinder.getComicBookDirectoryPath());
 
         /*
         String [] itemname = {
@@ -160,6 +155,15 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
+    public void recreateOnDirectory(Verzeichnis directory){
+        try {
+            fileBrowserDataService.setData(daodir.getChildren(directory), directory);
+        } catch (SQLException e) {
+            Log.e("MainActivity", "in recreateOnDirectory("+directory.getFilepath()+") there was an SQLException:"+e.toString());
+        }
+
+        startActivity(new Intent(MainActivity.this, MainActivity.class));
+    }
 
 
     @Override
@@ -172,6 +176,8 @@ public class MainActivity extends AppCompatActivity {
     private ServiceConnection mConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
             fileBrowserDataService = ((FileBrowserDataService.LocalBinder)service).getService();
+            Log.v("MainActivityCreation", "before openDirectory()");
+            openDirectory(fileBrowserDataService.getPosition().getFilepath());
             Log.v("MainActivity", "FileBrowserDataService connected");
         }
         public void onServiceDisconnected(ComponentName className) {

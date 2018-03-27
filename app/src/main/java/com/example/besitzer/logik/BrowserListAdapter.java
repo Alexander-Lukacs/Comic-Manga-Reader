@@ -66,6 +66,7 @@ public class BrowserListAdapter extends BaseAdapter{
 
     @SuppressLint("ResourceAsColor")
     public View getView(int position, View view, ViewGroup parent) {
+        Log.v("BrowserListAdapter", "BrowserListAdapter.getView() was called!");
         //component declarations
         LayoutInflater inflater=aufpuster;
         View rowView=inflater.inflate(R.layout.browser_list_item, parent,false);
@@ -90,7 +91,7 @@ public class BrowserListAdapter extends BaseAdapter{
             @Override
             public void onClick(View v) {
                 Log.v("BrowserListAdapter", "opening: "+dir.getFilepath());
-                mainActivity.openDirectory(dir.getFilepath());
+                mainActivity.recreateOnDirectory(dir);
             }
         });
         return rowView;
