@@ -3,10 +3,13 @@ package com.example.besitzer.reader;
 import android.Manifest;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.IBinder;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -15,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.besitzer.logik.BrowserListAdapter;
 
@@ -36,6 +40,9 @@ public class MainActivity extends AppCompatActivity {
     private MainActivity thisActivity = this;
     private VerzeichnisDao daodir;
     private OpenedDao daoopen;
+
+    private ViewerDataService viewerDataService;
+    private FileBrowserDataService fileBrowserDataService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,12 +66,13 @@ public class MainActivity extends AppCompatActivity {
             getApplicationContext().startService(new Intent(this, ComicDirectoryScannerService.class));
         }
         if(!isServiceRunning(FileBrowserDataService.class)){
-            getApplicationContext().startService(new Intent(this, FileBrowserDataService.class));
+            bindService(
+                    new Intent(MainActivity.this, FileBrowserDataService.class),
+                    mConnection,
+                    Context.BIND_AUTO_CREATE
+            );
+        }
 
-        }
-        if(!isServiceRunning(ViewerDataService.class)){
-            getApplicationContext().startService(new Intent(this, ViewerDataService.class));
-        }
         setSupportActionBar(toolbar);
 
         Log.v("MainActivityCreation", "before openDirectory()");
@@ -151,5 +159,25 @@ public class MainActivity extends AppCompatActivity {
         }
         return false;
     }
+
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(mConnection);
+    }
+
+
+    private ServiceConnection mConnection = new ServiceConnection() {
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            fileBrowserDataService = ((FileBrowserDataService.LocalBinder)service).getService();
+            Log.v("MainActivity", "FileBrowserDataService connected");
+        }
+        public void onServiceDisconnected(ComponentName className) {
+            fileBrowserDataService = null;
+            Log.v("MainActivity", "FileBrowserDataService disconnected");
+        }
+    };
 
 }
