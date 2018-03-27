@@ -1,12 +1,22 @@
 package com.example.besitzer.reader;
 
+import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 
 public class ViewerActivity extends AppCompatActivity implements View.OnClickListener {
+
+    private ImageView page;
+    private ImageButton btnPrevious;
+    private ImageButton btnNext;
+    private int currentPage = 0;
+    private int maxPage;
+    private SeekBar pageBar;
+    int[] images={R.drawable.resource, R.drawable.directory, R.mipmap.ic_launcher, R.drawable.resource, R.mipmap.ic_launcher_round};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -14,15 +24,38 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
 
         setContentView(R.layout.viewer);
 
+        page = (ImageView) findViewById(R.id.image_view) ;
+        page.setImageResource(images[currentPage]);
+        maxPage = images.length-1;
 
-        ImageButton btnPrevious = (ImageButton) findViewById(R.id.btn_previous);
+        btnPrevious = (ImageButton) findViewById(R.id.btn_previous);
         btnPrevious.setOnClickListener(this);
 
-        ImageButton btnNext = (ImageButton) findViewById(R.id.btn_next);
+        btnNext = (ImageButton) findViewById(R.id.btn_next);
         btnNext.setOnClickListener(this);
 
-        //SeekBar seekBar = (SeekBar) findViewById(R.id.seek_bar);
-        //seekBar.setOnSeekBarChangeListener(this);
+        pageBar = (SeekBar) findViewById(R.id.seek_bar);
+        pageBar.setMax(maxPage);
+
+        /**
+         * SeekBar to display the current state of the image number.
+         */
+        pageBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int currentPage, boolean fromUser) {
+                page.setImageResource(images[currentPage]);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
     }
 
     /**
@@ -36,8 +69,6 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
 
     /**
      * Switch-Case to change the current image to the previous or next image.
-     *
-     * @param view the previous image
      */
     @Override
     public void onClick(View view) {
@@ -45,35 +76,22 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
         switch (view.getId()) {
 
             case R.id.btn_previous:
-                // do your code
+                if(!(currentPage == 0))
+                    currentPage--;
+                    currentPage = currentPage % images.length;
+                    page.setImageResource(images[currentPage]);
                 break;
 
             case R.id.btn_next:
-                // do your code
+                if(!(currentPage >= maxPage)){
+                    currentPage++;
+                    currentPage = currentPage % images.length;
+                    page.setImageResource(images[currentPage]);
+                }
                 break;
 
             default:
                 break;
         }
-
-
-
-        /**
-         * SeekBar to display the current state of the image number.
-         *
-         * @param "Number" from the current image
-         * @return current state of the image number
-         */
-        /*public void onProgressChanged (){
-
-        }
-
-        public void onStartTrackingTouch (){
-
-        }
-
-        public void onStopTrackingTouch (){
-
-        }*/
     }
 }
