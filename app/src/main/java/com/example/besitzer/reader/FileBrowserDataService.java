@@ -4,12 +4,20 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
+import android.util.Log;
 
 import com.example.besitzer.reader.Datenbank.Verzeichnis;
+import com.example.besitzer.reader.Datenbank.VerzeichnisDao;
+import com.example.besitzer.reader.Datenbank.VerzeichnisDaoImpl;
+import com.example.besitzer.util.ComicBookDirectoryFinder;
 import com.example.besitzer.util.Directory;
 
+import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * dynamic singleton storage for data used by the mainactivity and the vieweractivity
+ */
 public class FileBrowserDataService extends Service {
 
     private List<Verzeichnis> children;
@@ -24,6 +32,18 @@ public class FileBrowserDataService extends Service {
     public class LocalBinder extends Binder {
         FileBrowserDataService getService() {
             return FileBrowserDataService.this;
+        }
+    }
+
+    @Override
+    public void onCreate() {
+        VerzeichnisDao dirdao = new VerzeichnisDaoImpl(getApplicationContext());
+        try {
+            this.position = dirdao.getByPath(ComicBookDirectoryFinder.getComicBookDirectoryPath());
+            this.children = dirdao.getChildren(position);
+
+        } catch (SQLException e) {
+            Log.e("DataService", "comicbook directory doesn't exist in the db!");
         }
     }
 
