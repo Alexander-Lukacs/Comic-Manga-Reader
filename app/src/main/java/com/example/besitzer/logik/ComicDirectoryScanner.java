@@ -39,6 +39,8 @@ public class ComicDirectoryScanner {
      */
     public static void FullScan(String directory, Context context) {
         VerzeichnisDao dirdao = new VerzeichnisDaoImpl(context);
+        //TODO: remove following line:
+        dirdao.debugLogTable();
 
         File dirFile = new File(directory);
 
@@ -74,9 +76,15 @@ public class ComicDirectoryScanner {
                 }
             } else {//directory doesn't exist in DB, add it!
                 try {
+                    int parentId;
+                    if(dirFile.getParent().equals(ComicBookDirectoryFinder.getComicBookDirectoryPath())){
+                        parentId = 0;
+                    }else{
+                        parentId = dirdao.getByPath(dirFile.getParent()).getId();
+                    }
                     dirdao.addDirectory(
                             directory,
-                            dirdao.getByPath(dirFile.getParent()).getId(),
+                            parentId,
                             FilenameUtils.getName(directory),
                             Directory.extensionToType(directory),
                             checkForLeaves(dirFile)

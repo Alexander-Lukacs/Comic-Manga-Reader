@@ -12,16 +12,29 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.example.besitzer.logik.BrowserListAdapter;
 
 import com.example.besitzer.logik.ComicDirectoryScannerService;
+import com.example.besitzer.reader.Datenbank.OpenedDao;
+import com.example.besitzer.reader.Datenbank.OpenedDaoImpl;
+import com.example.besitzer.reader.Datenbank.VerzeichnisDao;
+import com.example.besitzer.reader.Datenbank.VerzeichnisDaoImpl;
 import com.example.besitzer.reader.R;
+import com.example.besitzer.util.ComicBookDirectoryFinder;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private Activity thisActivity = this;
+    private VerzeichnisDao daodir;
+    private OpenedDao daoopen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
                 new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                 1
         );
+        daoopen=new OpenedDaoImpl(getApplicationContext());
+        daodir=new VerzeichnisDaoImpl(getApplicationContext());
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -39,25 +54,9 @@ public class MainActivity extends AppCompatActivity {
         }
         setSupportActionBar(toolbar);
 
-        //---------------------------------------------------------------------------------------
-        // Test(Mockdaten) für die ListView -> Alex bitte für die Logik entfernen
-        /*ListView view;
-        view = (ListView) findViewById(R.id.browser_list);
-        String [] array = {
-                "Adidas - Kurs: 73,45 €",
-                "Allianz - Kurs: 145,12 €",
-                "BASF - Kurs: 84,27 €",
-                "Bayer - Kurs: 128,60 €",
-                "Beiersdorf - Kurs: 80,55 €",
-                "BMW St. - Kurs: 104,11 €",
-                "Commerzbank - Kurs: 12,47 €",
-                "Continental - Kurs: 209,94 €",
-                "Daimler - Kurs: 84,33 €"
-        };
-        ArrayList<String> werte = new ArrayList(Arrays.asList(array));
-        ArrayAdapter adapter = new ArrayAdapter(this, R.layout.browser_list_item, R.id.browser_list_item_text, werte);
-        view.setAdapter(adapter);*/
+        openDirectory(ComicBookDirectoryFinder.getComicBookDirectoryPath());
 
+        /*
         String [] itemname = {
                 "Adidas - Kurs: 73,45 €",
                 "Allianz - Kurs: 145,12 €"
@@ -72,8 +71,28 @@ public class MainActivity extends AppCompatActivity {
         view =(ListView)findViewById(R.id.browser_list);
         BrowserListAdapter adapter = new BrowserListAdapter(this, itemname, imgid);
         view.setAdapter(adapter);
-
+        */
         //---------------------------------------------------------------------------------------
+    }
+
+    public void openDirectory(String path){
+        ListView view;
+        view = (ListView) findViewById(R.id.browser_list);
+        //old: String [] array = new String[0];
+        List werte=null;
+        try {
+             werte = daodir.getChildren(daodir.getByPath(ComicBookDirectoryFinder.getComicBookDirectoryPath()));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        //old: ArrayList<String> werte = new ArrayList(Arrays.asList(array));
+        if( (werte != null) ){
+            if(werte.size() >=0){
+                ArrayAdapter adapter = new ArrayAdapter(this, R.layout.browser_list_item, R.id.browser_list_item_text, werte);
+                view.setAdapter(adapter);
+            }
+        }
+
     }
 
     @Override

@@ -25,7 +25,7 @@ public class ComicDirectoryScannerService extends Service {
 
 
     //TODO: performance tuning on these constants
-    public static final int TIME_BETWEEN_SCANS = 60_000;//ms
+    public static final int TIME_BETWEEN_SCANS = 10_000;//ms
     public static final int LAZY_FULL_RATIO = 5;//how many lazy scans are made before another pedantic one
     public static final int NOW = 0;//yes, I'm *that guy*
 

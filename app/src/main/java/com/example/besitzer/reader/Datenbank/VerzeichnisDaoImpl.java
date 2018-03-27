@@ -1,6 +1,7 @@
 package com.example.besitzer.reader.Datenbank;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.j256.ormlite.dao.Dao;
@@ -9,6 +10,8 @@ import android.content.Context;
 import android.util.Log;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
+
+import org.apache.commons.io.FilenameUtils;
 
 /**
  * Created by robin on 22.03.18.
@@ -69,17 +72,17 @@ public class VerzeichnisDaoImpl implements VerzeichnisDao {
      * @param parentId the Id of the Parent_Directory
      * @param name     the name of the Directory
      * @param type     the type of the Directory
-     * @param hasLaeves true if the Directory has children, else false
+     * @param hasLeaves true if the Directory has children, else false
      */
 
-    public void addDirectory(String path, int parentId, String name, int type, boolean hasLaeves)
+    public void addDirectory(String path, int parentId, String name, int type, boolean hasLeaves)
     {
         Verzeichnis directory = new Verzeichnis();
         directory.setFilepath(path);
         directory.setParentId(parentId);
         directory.setFilename(name);
         directory.setFiletype(type);
-        directory.setHasLeaves(hasLaeves);
+        directory.setHasLeaves(hasLeaves);
 
         try
         {
@@ -87,7 +90,22 @@ public class VerzeichnisDaoImpl implements VerzeichnisDao {
             verzeichnisDao.createOrUpdate(directory);
         }catch (SQLException e)
         {
-            e.printStackTrace();
+            Log.e(
+                    "VerzeichnisDaoImpl",
+                    "in addDirectory("
+                            +path
+                            +","
+                            +parentId
+                            +","
+                            +name
+                            +","
+                            +type
+                            +","
+                            +hasLeaves
+                            +");"
+                            +" there was an SQLException:"
+                            + e.toString()
+            );
         }
     }
 
@@ -124,13 +142,23 @@ public class VerzeichnisDaoImpl implements VerzeichnisDao {
 
     public Verzeichnis getByPath(String path)throws SQLException
     {
-        List<Verzeichnis> list;
+        List<Verzeichnis> inlist;
+        List<Verzeichnis> outlist=new ArrayList<Verzeichnis>();
         Verzeichnis verzeichnis;
-        list = verzeichnisDao.queryForEq("Dateipfad", path);
-        if(list==null || list.size()<1){
+        //list = verzeichnisDao.queryForEq("Dateipfad", path);
+        inlist = verzeichnisDao.queryForAll();
+        if(inlist != null && inlist.size()>0){
+            for (Verzeichnis v : inlist){
+                if(FilenameUtils.equalsNormalized(path, v.getFilepath())){
+                    outlist.add(v);
+                }
+            }
+        }
+
+        if(outlist.size()<=0){
             throw new SQLException("SQLException on call: getByPath("+path+"):" + " The directory \"" +path+ "\" doesn't exist in the DB.");
         }
-        verzeichnis = list.get(0);
+        verzeichnis = outlist.get(0);
         return verzeichnis;
     }
 
@@ -155,6 +183,23 @@ public class VerzeichnisDaoImpl implements VerzeichnisDao {
 
 
         return list;
+    }
+
+    /**
+     * logs the whole directory table into the android debug log.
+     */
+    public void debugLogTable(){
+        List<Verzeichnis> list=null;
+        try {
+            list = verzeichnisDao.queryForAll();
+        } catch (SQLException e) {
+            Log.d("debuglogtable", "sqlexception during directory db dump: "+e.toString());
+            return;
+        }
+        Log.d("debuglogtable", "starting directory db dump");
+        for(Verzeichnis v : list){
+            Log.d("debuglogtable", v.toString());
+        }
     }
 
 /**

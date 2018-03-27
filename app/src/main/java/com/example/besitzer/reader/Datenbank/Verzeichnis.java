@@ -19,7 +19,16 @@ public class Verzeichnis {
     @DatabaseField(columnName = "hat-Blätter")
     private boolean hasLeaves;
 
-
+public String toString(){
+    return (
+            "id="+id
+            +", pfad="+filepath
+            +". parentid="+parentId
+            +", filename="+filename
+            +", type="+filetype
+            +", hasleaves="+hasLeaves
+    );
+}
     public Verzeichnis() {
 
 

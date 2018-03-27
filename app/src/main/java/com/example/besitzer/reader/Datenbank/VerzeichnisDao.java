@@ -17,7 +17,12 @@ public interface VerzeichnisDao {
 
     public void setHasLeaves(int Id, boolean hasLeaves) throws SQLException;
     public void setHasLeaves(String path, boolean hasleaves) throws SQLException;
+    /**
+     * logs the whole directory table into the android debug log.
+     */
+    public void debugLogTable();
 
-   // public void deleteOpened(Opened opened);
+
+        // public void deleteOpened(Opened opened);
    // public void updateOpened(Opened opened);
 }
