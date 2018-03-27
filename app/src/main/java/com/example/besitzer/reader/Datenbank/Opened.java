@@ -52,5 +52,4 @@ public class Opened {
         return timestamp;
     }
 
-
 }
