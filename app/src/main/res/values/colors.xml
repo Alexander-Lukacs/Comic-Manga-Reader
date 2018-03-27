@@ -7,4 +7,5 @@
     <color name="read">#6bc46b</color>
     <color name="unread">#aaaaaa</color>
     <color name="partiallyRead">#daca52</color>
+    <color name="unreadable">#ff0000</color>
 </resources>

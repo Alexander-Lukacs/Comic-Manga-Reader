@@ -10,6 +10,7 @@ import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
@@ -32,7 +33,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Activity thisActivity = this;
+    private MainActivity thisActivity = this;
     private VerzeichnisDao daodir;
     private OpenedDao daoopen;
 
@@ -43,17 +44,23 @@ public class MainActivity extends AppCompatActivity {
                 new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                 1
         );
+
+        Log.v("MainActivityCreation", "before Dao Creation");
         daoopen=new OpenedDaoImpl(getApplicationContext());
         daodir=new VerzeichnisDaoImpl(getApplicationContext());
 
+        Log.v("MainActivityCreation", "before super.onCreate()");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        Log.v("MainActivityCreation", "before service Launch");
         if(! isServiceRunning(ComicDirectoryScannerService.class)){
             getApplicationContext().startService(new Intent(this, ComicDirectoryScannerService.class));
         }
         setSupportActionBar(toolbar);
 
+        Log.v("MainActivityCreation", "before openDirectory()");
         openDirectory(ComicBookDirectoryFinder.getComicBookDirectoryPath());
 
         /*
@@ -76,23 +83,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openDirectory(String path){
+        Log.v("openDirectory", "start of openDirectory()");
         ListView view;
         view = (ListView) findViewById(R.id.browser_list);
         //old: String [] array = new String[0];
         List werte=null;
+        Log.v("openDirectory", "before dao Call");
         try {
              werte = daodir.getChildren(daodir.getByPath(ComicBookDirectoryFinder.getComicBookDirectoryPath()));
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        Log.v("openDirectory", "after dao call, before adapter call()");
         //old: ArrayList<String> werte = new ArrayList(Arrays.asList(array));
         if( (werte != null) ){
             if(werte.size() >=0){
-                ArrayAdapter adapter = new ArrayAdapter(this, R.layout.browser_list_item, R.id.browser_list_item_text, werte);
-
+                //ArrayAdapter adapter = new ArrayAdapter(this, R.layout.browser_list_item, R.id.browser_list_item_text, werte);
+                BrowserListAdapter adapter = new BrowserListAdapter(getApplicationContext(), werte, this.thisActivity);
                 view.setAdapter(adapter);
             }
         }
+        Log.v("openDirectory", "after adapter call");
+
 
     }
 

@@ -36,7 +36,7 @@ public class ComicDirectoryScannerService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-
+        Log.v("CDScannerService", "before onCreate");
         //weise dem directory pfad einen wert zu
         comicbookDirectory = com.example.besitzer.util.ComicBookDirectoryFinder.getComicBookDirectoryPath();
         File comicDir = new File(comicbookDirectory);
@@ -65,6 +65,7 @@ public class ComicDirectoryScannerService extends Service {
             }
         }catch(Throwable t){}
         LaunchDaemon();
+        Log.v("CDScannerService", "after onCreate");
     }
 
 

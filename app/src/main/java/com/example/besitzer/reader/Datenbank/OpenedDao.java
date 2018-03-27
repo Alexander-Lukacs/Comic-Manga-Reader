@@ -48,4 +48,13 @@ public interface OpenedDao {
      * sets the opened state of a given directory to "unreadable"
      */
     public void setUnreadable(int directoryId)throws SQLException;
-}
+
+    /**
+     * for a given directoryId
+     *  either retrieves the corresponding opened state from the database
+     *  or if no entry is present, creates new one with timestamp set to current time and state set to unread
+     * @param directoryId
+     */
+    public Opened getOrCreateOpenedStateById(int directoryId) throws SQLException;
+
+    }

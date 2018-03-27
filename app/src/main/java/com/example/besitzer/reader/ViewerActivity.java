@@ -11,7 +11,9 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.viewer);
+
 
         ImageButton btnPrevious = (ImageButton) findViewById(R.id.btn_previous);
         btnPrevious.setOnClickListener(this);
@@ -53,6 +55,8 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
             default:
                 break;
         }
+
+
 
         /**
          * SeekBar to display the current state of the image number.

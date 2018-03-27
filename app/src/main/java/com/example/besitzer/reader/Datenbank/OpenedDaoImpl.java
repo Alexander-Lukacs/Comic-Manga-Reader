@@ -61,6 +61,20 @@ public class OpenedDaoImpl implements OpenedDao {
         opened = openedDao.queryForId(directoryId);
         return opened;
     }
+
+    public Opened getOrCreateOpenedStateById(int directoryId) throws SQLException {
+        Opened opened;
+        if(!findById(directoryId)){ //if not in db, put it there.
+            opened = new Opened();
+            opened.setId(directoryId);
+            opened.setState(com.example.besitzer.util.Opened.UNREAD);
+            opened.setTimestamp((int) System.currentTimeMillis());
+        }else{
+            opened = getById(directoryId);
+        }
+        return opened;
+    }
+
     /**
      * returns a list of the opened states of the children of a directory
      * @param verzeichnis
