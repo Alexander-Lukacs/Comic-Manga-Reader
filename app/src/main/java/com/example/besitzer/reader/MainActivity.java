@@ -58,6 +58,13 @@ public class MainActivity extends AppCompatActivity {
         if(! isServiceRunning(ComicDirectoryScannerService.class)){
             getApplicationContext().startService(new Intent(this, ComicDirectoryScannerService.class));
         }
+        if(!isServiceRunning(FileBrowserDataService.class)){
+            getApplicationContext().startService(new Intent(this, FileBrowserDataService.class));
+
+        }
+        if(!isServiceRunning(ViewerDataService.class)){
+            getApplicationContext().startService(new Intent(this, ViewerDataService.class));
+        }
         setSupportActionBar(toolbar);
 
         Log.v("MainActivityCreation", "before openDirectory()");
