@@ -13,20 +13,19 @@ public class Opened {
     private int state;
     @DatabaseField(columnName = "Zeitpunkt")
     private int timestamp;
-    @DatabaseField(canBeNull=false, foreign=true, foreignAutoRefresh = true, columnName = "Dateipfad")
-    private Verzeichnis filepath;
+
 
 
     public Opened()
     {
 
     }
-    public Opened(int id, int state, int timestamp, Verzeichnis filepath)
+    public Opened(int id, int state, int timestamp)
     {
         this.id = id;
         this.state = state;
         this.timestamp = timestamp;
-        this.filepath = filepath;
+
     }
 
     public void setId(int id) {this.id = id;}
@@ -53,13 +52,5 @@ public class Opened {
         return timestamp;
     }
 
-    public void setFilepath(Verzeichnis filepath)
-    {
-        this.filepath = filepath;
-    }
 
-    public Verzeichnis getFilepath()
-    {
-        return filepath;
-    }
 }

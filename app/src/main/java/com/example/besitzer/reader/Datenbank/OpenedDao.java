@@ -11,7 +11,7 @@ public interface OpenedDao {
     /**
      * creates a new entry in the opened table
      */
-    public void addOpened(int id, int state, int timestamp, Verzeichnis filepath);
+    public void addOpened(int id, int state, int timestamp);
 
     /**
      * checks wether a given directory (defined by ID) already has an opened entry

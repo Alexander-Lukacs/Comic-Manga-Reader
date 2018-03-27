@@ -26,13 +26,13 @@ public class OpenedDaoImpl implements OpenedDao {
     /**
      * creates a new entry in the opened table
      */
-    public void addOpened(int id, int state, int timestamp, Verzeichnis filepath)
+    public void addOpened(int id, int state, int timestamp)
     {
         Opened opened = new Opened();
         opened.setId(id);
         opened.setState(state);
         opened.setTimestamp(timestamp);
-        opened.setFilepath(filepath);
+
         try
         {
             openedDao = helper.getOpenedDao();
