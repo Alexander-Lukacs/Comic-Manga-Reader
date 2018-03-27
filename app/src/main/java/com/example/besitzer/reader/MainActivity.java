@@ -58,8 +58,6 @@ public class MainActivity extends AppCompatActivity {
 
         Log.v("MainActivityCreation", "before super.onCreate()");
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         Log.v("MainActivityCreation", "before service Launch");
         if(! isServiceRunning(ComicDirectoryScannerService.class)){
@@ -70,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
                 mConnection,
                 Context.BIND_AUTO_CREATE
         );
-        setSupportActionBar(toolbar);
 
 
         /*
@@ -92,8 +89,12 @@ public class MainActivity extends AppCompatActivity {
         //---------------------------------------------------------------------------------------
     }
 
+
     public void openDirectory(String path){
         Log.v("openDirectory", "start of openDirectory()");
+        setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         ListView view;
         view = (ListView) findViewById(R.id.browser_list);
         //old: String [] array = new String[0];
@@ -113,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
                 view.setAdapter(adapter);
             }
         }
+
         Log.v("openDirectory", "after adapter call");
 
 
@@ -156,13 +158,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void recreateOnDirectory(Verzeichnis directory){
-        try {
-            fileBrowserDataService.setData(daodir.getChildren(directory), directory);
-        } catch (SQLException e) {
-            Log.e("MainActivity", "in recreateOnDirectory("+directory.getFilepath()+") there was an SQLException:"+e.toString());
+        if(!directory.getHasLeaves()) {//if it has directories inside
+            try {
+                fileBrowserDataService.setData(daodir.getChildren(directory), directory);
+            } catch (SQLException e) {
+                Log.e("MainActivity", "in recreateOnDirectory(" + directory.getFilepath() + ") there was an SQLException:" + e.toString());
+            }
+            startActivity(new Intent(MainActivity.this, MainActivity.class));
+        }else{//if it doesn't have directories inside
+            startActivity(new Intent(MainActivity.this, ViewerActivity.class));
         }
-
-        startActivity(new Intent(MainActivity.this, MainActivity.class));
     }
 
 

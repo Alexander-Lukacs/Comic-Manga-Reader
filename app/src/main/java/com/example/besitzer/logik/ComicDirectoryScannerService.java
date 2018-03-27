@@ -25,8 +25,8 @@ public class ComicDirectoryScannerService extends Service {
 
 
     //TODO: performance tuning on these constants
-    public static final int TIME_BETWEEN_SCANS = 10_000;//ms
-    public static final int LAZY_FULL_RATIO = 5;//how many lazy scans are made before another pedantic one
+    public static final int TIME_BETWEEN_SCANS = 60_000;//ms
+    public static final int LAZY_FULL_RATIO = 10;//how many lazy scans are made before another pedantic one
     public static final int NOW = 0;//yes, I'm *that guy*
 
     public ComicDirectoryScannerService() {
@@ -82,10 +82,15 @@ public class ComicDirectoryScannerService extends Service {
                 //run a full scan
                 //do LAZY_FULL_RATIO lazy scans, sleeping TIME_BETWEEN_SCANS inbetween them
                 //tell the handler to reschedule all this in TIME_BETWEEN_SCANS ms
+                Log.v("CDScannerservice", "launching fullscan...");
                 ComicDirectoryScanner.FullScan(comicbookDirectory, getApplicationContext());
+                Log.v("CDScannerservice", "fullscan complete!");
+
                 for(int i = 0; i< LAZY_FULL_RATIO; i++){
                     try{ Thread.sleep((long)TIME_BETWEEN_SCANS); }catch(Throwable t){}
+                    Log.v("CDScannerservice", "launching quickscan...");
                     ComicDirectoryScanner.QuickScan(comicbookDirectory, getApplicationContext());
+                    Log.v("CDScannerservice", "quickscan complete!");
                 }
                 handler.postDelayed(this, TIME_BETWEEN_SCANS);
             }

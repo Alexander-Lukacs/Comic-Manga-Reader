@@ -90,7 +90,7 @@ public class BrowserListAdapter extends BaseAdapter{
         rowView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.v("BrowserListAdapter", "opening: "+dir.getFilepath());
+                Log.v("BrowserListAdapter", "clicked on: "+dir.getFilepath());
                 mainActivity.recreateOnDirectory(dir);
             }
         });
