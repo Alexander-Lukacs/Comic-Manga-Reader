@@ -1,5 +1,6 @@
 package com.example.besitzer.reader.Datenbank;
 
+import java.io.File;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,12 +29,10 @@ public class VerzeichnisDaoImpl implements VerzeichnisDao {
 
     @Override
     public void setHasLeaves(String path, boolean hasLeaves) throws SQLException {
-        Verzeichnis directory;
-        List<Verzeichnis> list= verzeichnisDao.queryForEq("Dateipfad", path);
-        if(list==null || list.size()<1){
+        if(!findByPath(path)){
             throw new SQLException("SQLException on call: getByPath("+path+"): " + "The Directory with the path\""+ path + "\" does not exist in the database. Can't set hasLeaves property.");
         }
-        directory = list.get(0);
+        Verzeichnis directory = getByPath(path);
         directory.setHasLeaves(hasLeaves);
         verzeichnisDao.update(directory);
     }
@@ -120,15 +119,32 @@ public class VerzeichnisDaoImpl implements VerzeichnisDao {
 
     public boolean findByPath(String path) throws SQLException
     {
-        List<Verzeichnis> list;
-        list = verzeichnisDao.queryForEq("Dateipfad", path);
-        if (list.size() == 0)
-        {
+        List<Verzeichnis> inlist;
+        List<Verzeichnis> outlist=new ArrayList<Verzeichnis>();
+        Verzeichnis verzeichnis;
+        //list = verzeichnisDao.queryForEq("Dateipfad", path);
+        inlist = verzeichnisDao.queryForAll();
+        if(inlist != null && inlist.size()>0){
+            for (Verzeichnis v : inlist){
+                if(new File(path).equals( new File(v.getFilepath()))){
+                    outlist.add(v);
+                }else{
+                    //Log.w("verzeichnisdao", path+" doesn't equal "+v.getFilepath());
+                }
+            }
+        }else{
+            if(inlist==null){
+                Log.w("verzeichnisdao", "on call getByPath("+path+") inlist is null");
+            }else if(inlist.size()<=0){
+                Log.w("verzeichnisdao", "on call getByPath("+path+") inlist length is 0");
+            }
+        }
+        if(outlist==null||outlist.size()<=0){
             return false;
-        }else
-        {
+        }else{
             return true;
         }
+
 
     }
 
@@ -149,9 +165,17 @@ public class VerzeichnisDaoImpl implements VerzeichnisDao {
         inlist = verzeichnisDao.queryForAll();
         if(inlist != null && inlist.size()>0){
             for (Verzeichnis v : inlist){
-                if(FilenameUtils.equalsNormalized(path, v.getFilepath())){
+                if(new File(path).equals( new File(v.getFilepath()))){
                     outlist.add(v);
+                }else{
+                    //Log.w("verzeichnisdao", path+" doesn't equal "+v.getFilepath());
                 }
+            }
+        }else{
+            if(inlist==null){
+                Log.w("verzeichnisdao", "on call getByPath("+path+") inlist is null");
+            }else if(inlist.size()<=0){
+                Log.w("verzeichnisdao", "on call getByPath("+path+") inlist length is 0");
             }
         }
 

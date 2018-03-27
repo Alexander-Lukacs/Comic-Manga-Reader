@@ -89,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
         if( (werte != null) ){
             if(werte.size() >=0){
                 ArrayAdapter adapter = new ArrayAdapter(this, R.layout.browser_list_item, R.id.browser_list_item_text, werte);
+
                 view.setAdapter(adapter);
             }
         }
