@@ -1,21 +1,25 @@
 package com.example.besitzer.reader;
 
 import android.media.Image;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
 public class ViewerActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private final Handler handler = new Handler();
+
     private ImageView page;
+    private TextView headerPage;
     private ImageButton btnPrevious;
     private ImageButton btnNext;
     private int currentPage = 0;
     private int maxPage;
-    private SeekBar pageBar;
     int[] images={R.drawable.resource, R.drawable.directory, R.mipmap.ic_launcher, R.drawable.resource, R.mipmap.ic_launcher_round};
 
     @Override
@@ -28,34 +32,14 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
         page.setImageResource(images[currentPage]);
         maxPage = images.length-1;
 
+        headerPage = (TextView) findViewById(R.id.page_number);
+        headerPage.setText("[ " + (currentPage+1) + " / " + images.length + " ]");
+
         btnPrevious = (ImageButton) findViewById(R.id.btn_previous);
         btnPrevious.setOnClickListener(this);
 
         btnNext = (ImageButton) findViewById(R.id.btn_next);
         btnNext.setOnClickListener(this);
-
-        pageBar = (SeekBar) findViewById(R.id.seek_bar);
-        pageBar.setMax(maxPage);
-
-        /**
-         * SeekBar to display the current state of the image number.
-         */
-        pageBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int currentPage, boolean fromUser) {
-                page.setImageResource(images[currentPage]);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
     }
 
     /**
@@ -80,6 +64,13 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
                     currentPage--;
                     currentPage = currentPage % images.length;
                     page.setImageResource(images[currentPage]);
+
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            headerPage.setText("[ " + (currentPage+1) + " / " + images.length + " ]");
+                        }
+                    });
                 break;
 
             case R.id.btn_next:
@@ -87,6 +78,13 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
                     currentPage++;
                     currentPage = currentPage % images.length;
                     page.setImageResource(images[currentPage]);
+
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            headerPage.setText("[ " + (currentPage+1) + " / " + images.length + " ]");
+                        }
+                    });
                 }
                 break;
 
