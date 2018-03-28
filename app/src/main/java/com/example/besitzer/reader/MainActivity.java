@@ -91,17 +91,18 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void openDirectory(String path){
-        Log.v("openDirectory", "start of openDirectory()");
+        Log.v("openDirectory", "start of openDirectory("+path+")");
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ListView view;
         view = (ListView) findViewById(R.id.browser_list);
+
         //old: String [] array = new String[0];
         List werte=null;
         Log.v("openDirectory", "before dao Call");
         try {
-             werte = daodir.getChildren(daodir.getByPath(ComicBookDirectoryFinder.getComicBookDirectoryPath()));
+             werte = daodir.getChildren(daodir.getByPath(path));
         } catch (SQLException e) {
             e.printStackTrace();
         }

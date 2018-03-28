@@ -17,6 +17,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.besitzer.logik.ComicDirectoryScannerService;
 import com.example.besitzer.reader.Datenbank.Verzeichnis;
@@ -64,25 +65,27 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
                 }
             }
             if(images.size()<=0){//no images in here. whoops!
+                Toast.makeText(getApplicationContext(), "no images found :( wait some time and try again.", Toast.LENGTH_LONG).show();
                 finish();
+            }else {
+                Log.v("ViewerActivity", "images.size:" + images.size() + " currentpage:" + currentPage);
+                setContentView(R.layout.viewer);
+
+                page = (ImageView) findViewById(R.id.image_view);
+                page.setImageBitmap(BitmapFactory.decodeFile(images.get(currentPage).getFilepath()));
+                maxPage = images.size() - 1;
+
+                headerPage = (TextView) findViewById(R.id.page_number);
+                headerPage.setText("[ " + (currentPage + 1) + " / " + images.size() + " ]");
+
+                btnPrevious = (ImageButton) findViewById(R.id.btn_previous);
+                btnPrevious.setOnClickListener(ViewerActivity.this);
+
+                btnNext = (ImageButton) findViewById(R.id.btn_next);
+                btnNext.setOnClickListener(ViewerActivity.this);
+
+                Log.v("ViewerActivity", "FileBrowserDataService connected");
             }
-
-            setContentView(R.layout.viewer);
-
-            page = (ImageView) findViewById(R.id.image_view) ;
-            page.setImageBitmap(BitmapFactory.decodeFile(images.get(currentPage).getFilepath()));
-            maxPage = images.size()-1;
-
-            headerPage = (TextView) findViewById(R.id.page_number);
-            headerPage.setText("[ " + (currentPage+1) + " / " + images.size() + " ]");
-
-            btnPrevious = (ImageButton) findViewById(R.id.btn_previous);
-            btnPrevious.setOnClickListener(ViewerActivity.this);
-
-            btnNext = (ImageButton) findViewById(R.id.btn_next);
-            btnNext.setOnClickListener(ViewerActivity.this);
-
-            Log.v("ViewerActivity", "FileBrowserDataService connected");
         }
         public void onServiceDisconnected(ComponentName className) {
             fileBrowserDataService = null;
@@ -90,6 +93,12 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
         }
     };
 
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(mConnection);
+    }
 
     /**
      * Function to switch to the next or previous image with a swipe.
@@ -107,7 +116,7 @@ public class ViewerActivity extends AppCompatActivity implements View.OnClickLis
     public void onClick(View view) {
 
         switch (view.getId()) {
-
+            //TODO: read/unread state!
             case R.id.btn_previous:
                 if(!(currentPage == 0))
                     currentPage--;

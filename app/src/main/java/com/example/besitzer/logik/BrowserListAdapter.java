@@ -66,7 +66,11 @@ public class BrowserListAdapter extends BaseAdapter{
 
     @SuppressLint("ResourceAsColor")
     public View getView(int position, View view, ViewGroup parent) {
-        Log.v("BrowserListAdapter", "BrowserListAdapter.getView() was called!");
+        Log.v("BrowserListAdapter",
+                "BrowserListAdapter.getView() was called for position "
+                +position
+                +" which is the index of "+directories.get(position).getFilepath()
+        );
         //component declarations
         LayoutInflater inflater=aufpuster;
         View rowView=inflater.inflate(R.layout.browser_list_item, parent,false);

@@ -37,7 +37,7 @@ public class ComicDirectoryScanner {
      *
      * @param directory the !ABSOLUTE PATH! to scan and carry over into the database
      */
-    public static void FullScan(String directory, Context context) {
+    public static void FullScan(String directory, final Context context) {
         VerzeichnisDao dirdao = new VerzeichnisDaoImpl(context);
         File dirFile = new File(directory);
 
@@ -58,7 +58,7 @@ public class ComicDirectoryScanner {
                                 //nah...
                             } else {
 
-                                for (File child : children) {
+                                for (final File child : children) {
                                     FullScan(child.getAbsolutePath(), context);
                                 }
                             }
@@ -104,6 +104,31 @@ public class ComicDirectoryScanner {
                         Log.e("ComicDirectoryScanner", "this happened: " + e.toString());
                     }
                 }
+                //we added the directory, now scan the children
+                if (dirFile != null) {
+                    if (dirFile.isDirectory()) {
+                        File[] children = dirFile.listFiles();
+                        if(children!=null) {
+                            if (children.length == 0) {//directory is empty. should we do something?
+                                //nah...
+                            } else {
+
+                                for (final File child : children) {
+                                    FullScan(child.getAbsolutePath(), context);
+                                }
+                            }
+                        }
+                    } else {
+                        if (dirFile.isFile()) {//we're a file. get the extension and compare to DB
+
+                        } else {//spooky error! we're neither file nor directory
+                            Log.e("ComicDirectoryScanner",
+                                    "File in path \""
+                                            + directory
+                                            + "\" is apparently neither file nor directory");
+                        }
+                    }
+                }
             }
         }
     }
@@ -144,7 +169,7 @@ public class ComicDirectoryScanner {
      * @param directory
      */
 
-    public static void QuickScan(String directory, Context context) {
+    public static void QuickScan(final String directory, final Context context) {
         VerzeichnisDao dirdao = new VerzeichnisDaoImpl(context);
         File dirFile = new File(directory);
         boolean isInDB = false;
@@ -158,7 +183,11 @@ public class ComicDirectoryScanner {
 
                 return;
             } else { //if it's not in the DB we have to fullscan.
-                FullScan(directory, context);
+                new Thread(){
+                    public void run(){
+                        FullScan(directory, context);
+                    }
+                }.start();
             }
             if (dirFile.isDirectory()) {// keep scanning inside!
                 File[] listFiles = dirFile.listFiles();
