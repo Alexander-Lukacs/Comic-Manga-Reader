@@ -158,12 +158,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void recreateOnDirectory(Verzeichnis directory){
+        try {
+            fileBrowserDataService.setData(daodir.getChildren(directory), directory);
+        } catch (SQLException e) {
+            Log.e("MainActivity", "in recreateOnDirectory(" + directory.getFilepath() + ") there was an SQLException:" + e.toString());
+        }
         if(!directory.getHasLeaves()) {//if it has directories inside
-            try {
-                fileBrowserDataService.setData(daodir.getChildren(directory), directory);
-            } catch (SQLException e) {
-                Log.e("MainActivity", "in recreateOnDirectory(" + directory.getFilepath() + ") there was an SQLException:" + e.toString());
-            }
             startActivity(new Intent(MainActivity.this, MainActivity.class));
         }else{//if it doesn't have directories inside
             startActivity(new Intent(MainActivity.this, ViewerActivity.class));

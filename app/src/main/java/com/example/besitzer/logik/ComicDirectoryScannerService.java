@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.util.Log;
 
 import com.example.besitzer.reader.Datenbank.VerzeichnisDao;
@@ -74,29 +75,35 @@ public class ComicDirectoryScannerService extends Service {
      * That's a runnable scheduled to be periodically run in the background.
      */
     private void LaunchDaemon(){
-        handler = new Handler();
-        CDScannerDaemon = new Runnable() {
-            @Override
+        new Thread() {
             public void run() {
-                //what we do is
-                //run a full scan
-                //do LAZY_FULL_RATIO lazy scans, sleeping TIME_BETWEEN_SCANS inbetween them
-                //tell the handler to reschedule all this in TIME_BETWEEN_SCANS ms
-                Log.v("CDScannerservice", "launching fullscan...");
-                ComicDirectoryScanner.FullScan(comicbookDirectory, getApplicationContext());
-                Log.v("CDScannerservice", "fullscan complete!");
+                Looper.prepare();
+                handler = new Handler();
+                CDScannerDaemon = new Runnable() {
+                    @Override
+                    public void run() {
+                        //what we do is
+                        //run a full scan
+                        //do LAZY_FULL_RATIO lazy scans, sleeping TIME_BETWEEN_SCANS inbetween them
+                        //tell the handler to reschedule all this in TIME_BETWEEN_SCANS ms
+                        Log.v("CDScannerservice", "launching fullscan...");
+                        ComicDirectoryScanner.FullScan(comicbookDirectory, getApplicationContext());
+                        Log.v("CDScannerservice", "fullscan complete!");
 
-                for(int i = 0; i< LAZY_FULL_RATIO; i++){
-                    try{ Thread.sleep((long)TIME_BETWEEN_SCANS); }catch(Throwable t){}
-                    Log.v("CDScannerservice", "launching quickscan...");
-                    ComicDirectoryScanner.QuickScan(comicbookDirectory, getApplicationContext());
-                    Log.v("CDScannerservice", "quickscan complete!");
-                }
-                handler.postDelayed(this, TIME_BETWEEN_SCANS);
+                        for(int i = 0; i< LAZY_FULL_RATIO; i++){
+                            try{ Thread.sleep((long)TIME_BETWEEN_SCANS); }catch(Throwable t){}
+                            Log.v("CDScannerservice", "launching quickscan...");
+                            ComicDirectoryScanner.QuickScan(comicbookDirectory, getApplicationContext());
+                            Log.v("CDScannerservice", "quickscan complete!");
+                        }
+                        handler.postDelayed(this, TIME_BETWEEN_SCANS);
+                    }
+                };
+                //then we schedule that thing once. it will reschedule itself.
+                handler.postDelayed(CDScannerDaemon, NOW);
             }
-        };
-        //then we schedule that thing once. it will reschedule itself.
-        handler.postDelayed(CDScannerDaemon, NOW);
+        }.start();
+
     }
 
     /**

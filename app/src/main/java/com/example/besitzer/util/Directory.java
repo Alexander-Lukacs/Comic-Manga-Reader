@@ -57,6 +57,15 @@ public class Directory {
             default:     return TYPE_UNKNOWN;
         }
     }
+    public static boolean isImage(int type){
+        switch(type){
+            case TYPE_BMP: return true;
+            case TYPE_JPEG: return true;
+            case TYPE_JPG: return true;
+            case TYPE_PNG: return true;
+            default: return false;
+        }
+    }
 
 
 
