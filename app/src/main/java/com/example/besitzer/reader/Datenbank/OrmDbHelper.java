@@ -64,22 +64,6 @@ public class OrmDbHelper extends OrmLiteSqliteOpenHelper {
 
 
 
-
-
-   /** try {
-        Dao<Opened, Integer> meineDao = DaoManager.createDao(connectionSource, Opened.class);
-        return meineDao;
-    } catch (SQLException ex)
-    {
-        Log.e(LOG, "error creating DAO for Opened class", ex);
-    }
-     return null;
-
-    **/
-
-
-
-
   // Create Data Access Object for Opened
     public Dao<Opened, Integer> createOpenedDAO() {
         try {
@@ -119,20 +103,7 @@ public class OrmDbHelper extends OrmLiteSqliteOpenHelper {
           }
     }
 
-    /**
-    // Create Data Access Object for Verzeichnis
-    public Dao<Verzeichnis, Integer> createVerzeichnisDAO()
-    {
-        try{
-            return DaoManager.createDao(connectionSource, Verzeichnis.class);
-        }catch (SQLException ex)
-        {
-            Log.e(LOG, " error creating DAO for Verzeichnis class", ex);
-        }
-        return null;
-    }
 
-     **/
 
     public Dao<Verzeichnis, Integer> getVerzeichnisDao() throws SQLException
     {
@@ -167,39 +138,7 @@ public class OrmDbHelper extends OrmLiteSqliteOpenHelper {
         return openedRuntimeDao;
     }
 
-/**
- private void handleVerzeichnisse() throws SQLException
- {    //Beispiel id
-       int id;
-       id = 5;
-     // create Data Acces Object for Verzeichnisse
-     final Dao<Verzeichnis, Integer> VerzeichnisDAO = this.createVerzeichnisDAO();
 
-     //querry all Directorys from db
-      final List<Verzeichnis> allDirectorys = VerzeichnisDAO.queryForAll();
-
-      //create new verzeichnis
-      Verzeichnis verzeichnis = new Verzeichnis();
-      VerzeichnisDAO.create(verzeichnis);
-
-      //delete verzeichnis element with id = 5
-     VerzeichnisDAO.deleteById(5);
-
-     //upadate Verzeichnis element
-     VerzeichnisDAO.update(verzeichnis);
-
-    // VerzeichnisDAO.deleteIds(Collection<Integer> collection)
-
-    // Verzeichnis eintrag = VerzeichnisDAO.queryForId(id);
-
-   //  VerzeichnisDAO.query()
-            // VerzeichnisDAO.query()
-
-   // Verzeichnis zahl = VerzeichnisDAO.queryForId(4);
-
- }
-
-**/
     @Override
     public void close ()
     {
@@ -209,70 +148,7 @@ public class OrmDbHelper extends OrmLiteSqliteOpenHelper {
         openedDao = null;
     }
 
-    /*
 
-     Die folgenden Funktionen ist eine Beispielfunktionen
-
-    public void addDirectory()
-    {
-        Verzeichnis verzeichnis = new Verzeichnis();
-        verzeichnis.setFilename("");
-        verzeichnis.setFilepath("String/String");
-        verzeichnis.setFiletype(1);
-        verzeichnis.setHasLeaves(true);
-        verzeichnis.setParentId(2);
-
-        try
-        {
-            verzeichnisDao.createOrUpdate(verzeichnis);
-        } catch (SQLException e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    public void updateDirectory(Verzeichnis verzeichnis)
-    {
-        try
-        {
-            verzeichnisDao.createOrUpdate(verzeichnis);
-        } catch (SQLException e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    public void deleteDirectory(Verzeichnis verzeichnis)
-    {
-        try
-        {
-            verzeichnisDao.deleteById(verzeichnis.getId());
-
-
-        }catch (SQLException e)
-         {
-            e.printStackTrace();
-         }
-    }
-    private OrmDbHelper getDbHelper()
-    {
-        if (dbHelper == null)
-        {
-            dbHelper = OpenHelperManager.getHelper(this, OrmDbHelper.class);
-        }
-        return dbHelper;
-    }
-
-    public void updateDirectory(Verzeichnis verzeichnis)
-    {
-     try
-      {
-        verzeichnisDao.update(verzeichnis);
-        } catch (SQLException e)
-         {
-           e.printStackTrace();
-         }
- **/
     public void updateOpened(Opened opened)
     {
         try

@@ -23,6 +23,5 @@ public interface VerzeichnisDao {
     public void debugLogTable();
 
 
-        // public void deleteOpened(Opened opened);
-   // public void updateOpened(Opened opened);
+
 }
