@@ -53,14 +53,7 @@ public class VerzeichnisDaoImpl implements VerzeichnisDao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-/**
- content://Verzeichnisse
- content://database/Verzeichnisse
- content://database/Opened
- content://database/Verzeichnisse/1
- content://database/Verzeichnisse/2
- android.permission.READ_
- **/
+
 
     }
 
@@ -226,33 +219,5 @@ public class VerzeichnisDaoImpl implements VerzeichnisDao {
         }
     }
 
-/**
 
-    public void deleteOpened(Opened opened)
-    {
-        try
-        {
-            openedDao.deleteById(opened.getId());
-
-        }catch (SQLException e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-
-
-    public void updateOpened(Opened opened)
-    {
-        try
-        {
-            openedDao.createOrUpdate(opened);
-
-        }catch (SQLException e)
-        {
-            e.printStackTrace();
-        }
-    }
-
- **/
 }
